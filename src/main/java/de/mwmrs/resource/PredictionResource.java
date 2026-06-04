@@ -2,6 +2,7 @@ package de.mwmrs.resource;
 
 import de.mwmrs.dto.PredictionDto;
 import de.mwmrs.dto.SubmitPredictionRequest;
+import de.mwmrs.exception.BusinessException;
 import de.mwmrs.security.CurrentUser;
 import de.mwmrs.service.PredictionService;
 import io.quarkus.security.Authenticated;
@@ -13,6 +14,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import java.util.List;
 
@@ -29,15 +31,23 @@ public class PredictionResource {
     CurrentUser currentUser;
 
     @GET
-    public List<PredictionDto> list(@PathParam("id") Long matchdayId) {
-        return service.listForUser(matchdayId, currentUser.id()).stream()
+    public List<PredictionDto> list(@PathParam("id") Long matchdayId,
+                                    @QueryParam("groupId") Long groupId) {
+        if (groupId == null) {
+            throw BusinessException.badRequest("groupId query parameter is required");
+        }
+        return service.listForUser(matchdayId, groupId, currentUser.id()).stream()
                 .map(PredictionDto::from).toList();
     }
 
     @POST
     public List<PredictionDto> submit(@PathParam("id") Long matchdayId,
+                                      @QueryParam("groupId") Long groupId,
                                       List<@Valid SubmitPredictionRequest> requests) {
-        return service.submit(matchdayId, currentUser.require(), requests).stream()
+        if (groupId == null) {
+            throw BusinessException.badRequest("groupId query parameter is required");
+        }
+        return service.submit(matchdayId, groupId, currentUser.require(), requests).stream()
                 .map(PredictionDto::from).toList();
     }
 }

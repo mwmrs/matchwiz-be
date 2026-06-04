@@ -6,6 +6,7 @@ import java.time.OffsetDateTime;
 public record PredictionDto(
         Long id,
         Long userId,
+        Long groupId,
         Long matchId,
         Integer predictedHomeGoals,
         Integer predictedAwayGoals,
@@ -16,6 +17,7 @@ public record PredictionDto(
         return new PredictionDto(
                 p.id,
                 p.user.id,
+                p.group.id,
                 p.match.id,
                 p.predictedHomeGoals,
                 p.predictedAwayGoals,

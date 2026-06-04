@@ -48,13 +48,13 @@ public class RankingService {
         }
 
         List<Prediction> predictions = Prediction.list(
-                "match.matchday.competition.id = ?1 and match.status = ?2",
-                competitionId, MatchStatus.FINISHED);
+                "group.id = ?1 and match.matchday.competition.id = ?2 and match.status = ?3",
+                groupId, competitionId, MatchStatus.FINISHED);
 
         for (Prediction p : predictions) {
             Tally t = tallies.get(p.user.id);
             if (t == null) {
-                continue; // prediction by a non-member of this group
+                continue; // safety net: approved membership changed since query
             }
             Match match = p.match;
             if (match.homeGoals == null || match.awayGoals == null) {

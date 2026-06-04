@@ -15,6 +15,10 @@ public class Prediction extends BaseEntity {
     public AppUser user;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "group_id", nullable = false)
+    public Group group;
+
+    @ManyToOne(optional = false)
     @JoinColumn(name = "match_id", nullable = false)
     public Match match;
 
@@ -30,8 +34,8 @@ public class Prediction extends BaseEntity {
     @Column(name = "submitted_at", nullable = false)
     public OffsetDateTime submittedAt = OffsetDateTime.now();
 
-    public static Prediction findByUserAndMatch(Long userId, Long matchId) {
-        return find("user.id = ?1 and match.id = ?2", userId, matchId).firstResult();
+    public static Prediction findByUserGroupAndMatch(Long userId, Long groupId, Long matchId) {
+        return find("user.id = ?1 and group.id = ?2 and match.id = ?3", userId, groupId, matchId).firstResult();
     }
 
     public static List<Prediction> listByMatch(Long matchId) {

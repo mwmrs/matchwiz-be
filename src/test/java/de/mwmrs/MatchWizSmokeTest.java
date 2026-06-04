@@ -109,7 +109,7 @@ class MatchWizSmokeTest {
         // Member submits an exact prediction (returns 200 - upsert).
         given().contentType(ContentType.JSON).header("Authorization", bearer(member))
                 .body(List.of(Map.of("matchId", matchId, "predictedHomeGoals", 2, "predictedAwayGoals", 1)))
-                .when().post("/api/matchdays/" + matchdayId + "/predictions")
+                .when().post("/api/matchdays/" + matchdayId + "/predictions?groupId=" + groupId)
                 .then().statusCode(200);
 
         // Admin enters the final result -> triggers scoring.
@@ -120,7 +120,7 @@ class MatchWizSmokeTest {
 
         // Prediction now carries the awarded points (exact = 5).
         given().header("Authorization", bearer(member))
-                .when().get("/api/matchdays/" + matchdayId + "/predictions")
+                .when().get("/api/matchdays/" + matchdayId + "/predictions?groupId=" + groupId)
                 .then().statusCode(200)
                 .body("[0].awardedPoints", equalTo(5));
 
@@ -160,7 +160,7 @@ class MatchWizSmokeTest {
 
         given().contentType(ContentType.JSON).header("Authorization", bearer(admin))
                 .body(List.of(Map.of("matchId", matchId, "predictedHomeGoals", 1, "predictedAwayGoals", 0)))
-                .when().post("/api/matchdays/" + matchdayId + "/predictions")
+                .when().post("/api/matchdays/" + matchdayId + "/predictions?groupId=1")
                 .then().statusCode(400);
     }
 
