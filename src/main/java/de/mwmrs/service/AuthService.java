@@ -41,16 +41,13 @@ public class AuthService {
         return user;
     }
 
-    /**
-     * Authenticates a user. A token is issued even when the account is not yet
-     * approved (active=false) so the user can accept group invitations; group
-     * access remains gated until a GROUP_ADMIN/ADMIN approves the membership
-     * (which also activates the account). See {@link MembershipService#approve}.
-     */
     public LoginResponse login(LoginRequest req) {
         AppUser user = AppUser.findByUsername(req.username());
         if (user == null || !passwordService.matches(req.password(), user.passwordHash)) {
             throw BusinessException.unauthorized("Invalid credentials");
+        }
+        if (!user.active) {
+            throw BusinessException.forbidden("Account pending approval");
         }
         String token = tokenService.issue(user);
         return new LoginResponse(token, UserDto.from(user));

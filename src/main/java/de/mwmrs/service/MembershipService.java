@@ -1,5 +1,7 @@
 package de.mwmrs.service;
 
+import de.mwmrs.entity.AppUser;
+import de.mwmrs.entity.Group;
 import de.mwmrs.entity.GroupMembership;
 import de.mwmrs.entity.GroupRole;
 import de.mwmrs.entity.NotificationType;
@@ -19,14 +21,13 @@ public class MembershipService {
         return GroupMembership.listByGroup(groupId);
     }
 
+    public List<GroupMembership> listByUser(Long userId) {
+        return GroupMembership.listByUser(userId);
+    }
+
     /**
-     * Approves a pending membership. This also activates the user's account
-     * (active=true) — the contract exposes no separate account-approval endpoint,
-     * so group approval doubles as registration approval (SPEC §5).
-     *
-     * <p>The first approved member of a group is promoted to GROUP_ADMIN. The
-     * contract has no explicit promotion endpoint, so this keeps the GROUP_ADMIN
-     * role (SPEC §2) reachable for self-hosted groups created by the global ADMIN.
+     * Approves a pending join request. The first approved member of a group is
+     * auto-promoted to GROUP_ADMIN (SPEC §2).
      */
     @Transactional
     public GroupMembership approve(Long groupId, Long userId) {
@@ -35,7 +36,6 @@ public class MembershipService {
             throw BusinessException.notFound("Membership not found");
         }
         m.approved = true;
-        m.user.active = true;
         boolean groupHasAdmin = GroupMembership.count(
                 "group.id = ?1 and role = ?2 and approved = true",
                 groupId, GroupRole.GROUP_ADMIN) > 0;
@@ -43,8 +43,26 @@ public class MembershipService {
             m.role = GroupRole.GROUP_ADMIN;
         }
         notificationService.create(m.user, NotificationType.REGISTRATION_APPROVED,
-                "Registration approved",
+                "Membership approved",
                 "Your membership in group \"" + m.group.name + "\" has been approved.");
+        return m;
+    }
+
+    @Transactional
+    public GroupMembership join(Long groupId, AppUser user) {
+        Group group = Group.findById(groupId);
+        if (group == null) {
+            throw BusinessException.notFound("Group not found");
+        }
+        if (GroupMembership.findByGroupAndUser(groupId, user.id) != null) {
+            throw BusinessException.conflict("Already a member or join request pending");
+        }
+        GroupMembership m = new GroupMembership();
+        m.group = group;
+        m.user = user;
+        m.role = GroupRole.MEMBER;
+        m.approved = false;
+        m.persist();
         return m;
     }
 

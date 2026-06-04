@@ -16,8 +16,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * End-to-end smoke test of the prediction spine:
- * login -> competition -> teams/matchday/match -> register+invite+approve member
- * -> submit prediction -> enter result (scoring) -> rankings.
+ * login -> competition -> teams/matchday/match -> register+approve user+login+join group
+ * +approve membership -> submit prediction -> enter result (scoring) -> rankings.
  */
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -69,7 +69,7 @@ class MatchWizSmokeTest {
                 .when().post("/api/groups")
                 .then().statusCode(201).extract().path("id")).longValue();
 
-        // Register a member (created inactive); login still yields a token.
+        // Register a member (created inactive); login blocked until approved.
         Long memberId = ((Number) given().contentType(ContentType.JSON)
                 .body(Map.of("username", "member1", "password", "pw"))
                 .when().post("/api/auth/register")
@@ -77,17 +77,22 @@ class MatchWizSmokeTest {
                 .body("active", equalTo(false))
                 .extract().path("id")).longValue();
 
+        given().contentType(ContentType.JSON)
+                .body(Map.of("username", "member1", "password", "pw"))
+                .when().post("/api/auth/login")
+                .then().statusCode(403);
+
+        // Admin approves the user account.
+        given().contentType(ContentType.JSON).header("Authorization", bearer(admin))
+                .when().post("/api/users/" + memberId + "/approve")
+                .then().statusCode(200).body("active", equalTo(true));
+
         String member = login("member1", "pw");
 
-        // Invite -> accept (pending) -> approve (activates account + membership).
-        String invToken = given().contentType(ContentType.JSON).header("Authorization", bearer(admin))
-                .body(Map.of("email", "member1@example.com"))
-                .when().post("/api/groups/" + groupId + "/invitations")
-                .then().statusCode(201).extract().path("token");
-
-        given().header("Authorization", bearer(member))
-                .when().put("/api/invitations/" + invToken + "/accept")
-                .then().statusCode(200).body("approved", equalTo(false));
+        // Member joins group (pending) -> group admin approves.
+        given().contentType(ContentType.JSON).header("Authorization", bearer(member))
+                .when().post("/api/groups/" + groupId + "/join")
+                .then().statusCode(201).body("approved", equalTo(false));
 
         // First approved member is promoted to GROUP_ADMIN.
         given().header("Authorization", bearer(admin))

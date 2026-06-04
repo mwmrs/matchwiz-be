@@ -2,7 +2,10 @@ package de.mwmrs.resource;
 
 import de.mwmrs.dto.CreateGroupRequest;
 import de.mwmrs.dto.GroupDto;
+import de.mwmrs.dto.GroupMembershipDto;
+import de.mwmrs.security.CurrentUser;
 import de.mwmrs.service.GroupService;
+import de.mwmrs.service.MembershipService;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
@@ -28,6 +31,12 @@ public class GroupResource {
 
     @Inject
     GroupService service;
+
+    @Inject
+    MembershipService membershipService;
+
+    @Inject
+    CurrentUser currentUser;
 
     @GET
     public List<GroupDto> list(@QueryParam("competitionId") Long competitionId) {
@@ -61,5 +70,13 @@ public class GroupResource {
     public Response delete(@PathParam("id") Long id) {
         service.delete(id);
         return Response.noContent().build();
+    }
+
+    @POST
+    @Path("/{id}/join")
+    public Response joinGroup(@PathParam("id") Long id) {
+        GroupMembershipDto dto = GroupMembershipDto.from(
+                membershipService.join(id, currentUser.require()));
+        return Response.status(Response.Status.CREATED).entity(dto).build();
     }
 }

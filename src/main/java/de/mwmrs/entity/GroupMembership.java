@@ -39,4 +39,8 @@ public class GroupMembership extends BaseEntity {
     public static List<GroupMembership> listByGroup(Long groupId) {
         return list("group.id", groupId);
     }
+
+    public static List<GroupMembership> listByUser(Long userId) {
+        return list("user.id", userId);
+    }
 }
