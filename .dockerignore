@@ -1,5 +1,18 @@
+# Multi-stage build: the Dockerfile compiles inside Docker, so pom.xml and src/
+# must be included. Only heavy local artifacts are excluded.
 *
+
+# Allow source and build descriptor
+!pom.xml
+!src/
+
+# Allow pre-built target in case someone builds locally first (legacy Dockerfiles)
 !target/*-runner
 !target/*-runner.jar
 !target/lib/*
 !target/quarkus-app/*
+
+# Always exclude local dev and IDE noise
+.git/
+.idea/
+*.iml
