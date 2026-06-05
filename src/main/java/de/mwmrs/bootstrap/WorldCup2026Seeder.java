@@ -207,6 +207,10 @@ public class WorldCup2026Seeder {
     // --- helpers ---
 
     private Team team(String name, String shortName, String logoUrl) {
+        Team existing = Team.find("shortName", shortName).firstResult();
+        if (existing != null) {
+            return existing;
+        }
         var t = new Team();
         t.name = name;
         t.shortName = shortName;
