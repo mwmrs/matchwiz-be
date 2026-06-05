@@ -1,0 +1,26 @@
+package de.mwmrs.dto;
+
+import de.mwmrs.entity.GroupMembership;
+import de.mwmrs.entity.GroupRole;
+import java.time.OffsetDateTime;
+
+public record GroupMembershipDto(
+        Long id,
+        Long groupId,
+        Long userId,
+        String username,
+        GroupRole role,
+        boolean approved,
+        OffsetDateTime joinedAt) {
+
+    public static GroupMembershipDto from(GroupMembership m) {
+        return new GroupMembershipDto(
+                m.id,
+                m.group.id,
+                m.user.id,
+                m.user.username,
+                m.role,
+                m.approved,
+                m.joinedAt);
+    }
+}

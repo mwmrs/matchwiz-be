@@ -1,0 +1,8 @@
+package de.mwmrs.entity;
+
+public enum NotificationType {
+    MATCHDAY_STARTS,
+    MISSING_PREDICTIONS,
+    REGISTRATION_APPROVED,
+    INVITATION_ACCEPTED
+}
