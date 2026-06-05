@@ -120,10 +120,9 @@ public class WorldCup2026Seeder {
     }
 
     private void matchdays(Competition comp, Map<String, Team> t) {
-        // Deadlines = first kickoff of each matchday round (treated as UTC)
-        var md1 = matchday(comp, 1, "06/11/2026 13:00");
-        var md2 = matchday(comp, 2, "06/18/2026 12:00");
-        var md3 = matchday(comp, 3, "06/24/2026 12:00");
+        var md1 = matchday(comp, 1);
+        var md2 = matchday(comp, 2);
+        var md3 = matchday(comp, 3);
 
         // Matchday 1
         match(md1, t.get("1"),  t.get("2"),  "06/11/2026 13:00");
@@ -219,11 +218,10 @@ public class WorldCup2026Seeder {
         return t;
     }
 
-    private Matchday matchday(Competition comp, int number, String deadlineStr) {
+    private Matchday matchday(Competition comp, int number) {
         var md = new Matchday();
         md.competition = comp;
         md.number = number;
-        md.deadline = parseUtc(deadlineStr);
         md.persist();
         return md;
     }

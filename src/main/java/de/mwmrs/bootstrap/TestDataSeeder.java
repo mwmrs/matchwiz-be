@@ -63,13 +63,13 @@ public class TestDataSeeder {
         Team esp = findOrCreateTeam("Spain",   "ESP", "https://flagcdn.com/w80/es.png");
         Team bra = findOrCreateTeam("Brazil",  "BRA", "https://flagcdn.com/w80/br.png");
 
-        // MD1: deadline and kickoffs in the past — enter results now to test scoring
-        Matchday md1 = matchday(comp, 1, "05/28/2026 12:00");
+        // MD1: kickoffs in the past — enter results now to test scoring
+        Matchday md1 = matchday(comp, 1);
         Match m1 = match(md1, ger, fra, "05/29/2026 15:00");
         Match m2 = match(md1, esp, bra, "05/30/2026 18:00");
 
-        // MD2: deadline and kickoffs in the future — predictions still open
-        Matchday md2 = matchday(comp, 2, "06/20/2026 12:00");
+        // MD2: kickoffs in the future — predictions still open
+        Matchday md2 = matchday(comp, 2);
         match(md2, ger, esp, "06/21/2026 15:00");
         match(md2, fra, bra, "06/22/2026 18:00");
 
@@ -85,20 +85,20 @@ public class TestDataSeeder {
         membership(group, carol, GroupRole.MEMBER,      true);
         membership(group, dave,  GroupRole.MEMBER,      true);
 
-        // Predictions for MD1 — submitted before deadline; mix of exact / goal-difference /
-        // tendency / miss hits depending on the result the admin enters.
+        // Predictions for MD1 — mix of exact / goal-difference / tendency / miss hits
+        // depending on the result the admin enters.
         //   e.g. if admin sets Germany 2-1 France: alice=5pts(exact), dave=3pts(goaldiff), bob/carol=0
         //   e.g. if admin sets Spain 2-1 Brazil:   bob=2pts(tendency), rest=0
-        OffsetDateTime beforeDeadline = utc("05/27/2026 10:00");
-        prediction(alice, group, m1, 2, 1, beforeDeadline);
-        prediction(bob,   group, m1, 1, 1, beforeDeadline);
-        prediction(carol, group, m1, 0, 1, beforeDeadline);
-        prediction(dave,  group, m1, 2, 0, beforeDeadline);
+        OffsetDateTime predictionTime = utc("05/27/2026 10:00");
+        prediction(alice, group, m1, 2, 1, predictionTime);
+        prediction(bob,   group, m1, 1, 1, predictionTime);
+        prediction(carol, group, m1, 0, 1, predictionTime);
+        prediction(dave,  group, m1, 2, 0, predictionTime);
 
-        prediction(alice, group, m2, 1, 2, beforeDeadline);
-        prediction(bob,   group, m2, 3, 1, beforeDeadline);
-        prediction(carol, group, m2, 2, 2, beforeDeadline);
-        prediction(dave,  group, m2, 1, 1, beforeDeadline);
+        prediction(alice, group, m2, 1, 2, predictionTime);
+        prediction(bob,   group, m2, 3, 1, predictionTime);
+        prediction(carol, group, m2, 2, 2, predictionTime);
+        prediction(dave,  group, m2, 1, 1, predictionTime);
     }
 
     // --- helpers ---
@@ -133,11 +133,10 @@ public class TestDataSeeder {
         return t;
     }
 
-    private Matchday matchday(Competition comp, int number, String deadlineStr) {
+    private Matchday matchday(Competition comp, int number) {
         var md = new Matchday();
         md.competition = comp;
         md.number = number;
-        md.deadline = utc(deadlineStr);
         md.persist();
         return md;
     }

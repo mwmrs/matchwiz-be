@@ -32,7 +32,6 @@ public class MatchdayService {
         Matchday m = new Matchday();
         m.competition = competition;
         m.number = req.number();
-        m.deadline = req.deadline();
         m.persist();
         return m;
     }
@@ -48,7 +47,6 @@ public class MatchdayService {
             m.competition = competition;
         }
         m.number = req.number();
-        m.deadline = req.deadline();
         return m;
     }
 }

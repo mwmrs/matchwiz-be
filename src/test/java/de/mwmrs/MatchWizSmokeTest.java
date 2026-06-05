@@ -53,8 +53,7 @@ class MatchWizSmokeTest {
         Long teamB = createTeam(admin, "Team B", "TB");
 
         Long matchdayId = ((Number) given().contentType(ContentType.JSON).header("Authorization", bearer(admin))
-                .body(Map.of("competitionId", competitionId, "number", 1,
-                        "deadline", OffsetDateTime.now().plusDays(1).toString()))
+                .body(Map.of("competitionId", competitionId, "number", 1))
                 .when().post("/api/matchdays")
                 .then().statusCode(201).extract().path("id")).longValue();
 
@@ -135,7 +134,7 @@ class MatchWizSmokeTest {
     }
 
     @Test
-    void predictionAfterDeadlineRejected() {
+    void predictionAfterKickoffRejected() {
         String admin = login("admin", "admin");
 
         Long competitionId = ((Number) given().contentType(ContentType.JSON).header("Authorization", bearer(admin))
@@ -147,20 +146,43 @@ class MatchWizSmokeTest {
         Long teamB = createTeam(admin, "Barca", "FCB");
 
         Long matchdayId = ((Number) given().contentType(ContentType.JSON).header("Authorization", bearer(admin))
-                .body(Map.of("competitionId", competitionId, "number", 1,
-                        "deadline", OffsetDateTime.now().minusHours(1).toString()))
+                .body(Map.of("competitionId", competitionId, "number", 1))
                 .when().post("/api/matchdays")
                 .then().statusCode(201).extract().path("id")).longValue();
 
         Long matchId = ((Number) given().contentType(ContentType.JSON).header("Authorization", bearer(admin))
                 .body(Map.of("homeTeamId", teamA, "awayTeamId", teamB,
-                        "kickoffTime", OffsetDateTime.now().plusDays(1).toString()))
+                        "kickoffTime", OffsetDateTime.now().minusHours(1).toString()))
                 .when().post("/api/matchdays/" + matchdayId + "/matches")
                 .then().statusCode(201).extract().path("id")).longValue();
 
+        Long groupId = ((Number) given().contentType(ContentType.JSON).header("Authorization", bearer(admin))
+                .body(Map.of("competitionId", competitionId, "name", "LaLiga Tipprunde"))
+                .when().post("/api/groups")
+                .then().statusCode(201).extract().path("id")).longValue();
+
+        Long memberId = ((Number) given().contentType(ContentType.JSON)
+                .body(Map.of("username", "laMember", "password", "pw"))
+                .when().post("/api/auth/register")
+                .then().statusCode(201).extract().path("id")).longValue();
+
         given().contentType(ContentType.JSON).header("Authorization", bearer(admin))
+                .when().post("/api/users/" + memberId + "/approve")
+                .then().statusCode(200);
+
+        String member = login("laMember", "pw");
+
+        given().contentType(ContentType.JSON).header("Authorization", bearer(member))
+                .when().post("/api/groups/" + groupId + "/join")
+                .then().statusCode(201);
+
+        given().header("Authorization", bearer(admin))
+                .when().post("/api/groups/" + groupId + "/members/" + memberId + "/approve")
+                .then().statusCode(200);
+
+        given().contentType(ContentType.JSON).header("Authorization", bearer(member))
                 .body(List.of(Map.of("matchId", matchId, "predictedHomeGoals", 1, "predictedAwayGoals", 0)))
-                .when().post("/api/matchdays/" + matchdayId + "/predictions?groupId=1")
+                .when().post("/api/matchdays/" + matchdayId + "/predictions?groupId=" + groupId)
                 .then().statusCode(400);
     }
 

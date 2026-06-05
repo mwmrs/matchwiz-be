@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import java.time.OffsetDateTime;
 import java.util.List;
 
 @Entity
@@ -16,9 +15,6 @@ public class Matchday extends BaseEntity {
 
     @Column(nullable = false)
     public Integer number;
-
-    @Column(nullable = false)
-    public OffsetDateTime deadline;
 
     public static List<Matchday> listByCompetition(Long competitionId) {
         return list("competition.id", competitionId);

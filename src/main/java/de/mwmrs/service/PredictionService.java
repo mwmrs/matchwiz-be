@@ -29,10 +29,6 @@ public class PredictionService {
         if (matchday == null) {
             throw BusinessException.notFound("Matchday not found");
         }
-        if (matchday.deadline.isBefore(OffsetDateTime.now())) {
-            throw BusinessException.badRequest("Prediction deadline has passed");
-        }
-
         Group group = Group.findById(groupId);
         if (group == null) {
             throw BusinessException.notFound("Group not found");
@@ -50,6 +46,9 @@ public class PredictionService {
             Match match = Match.findById(req.matchId());
             if (match == null || !match.matchday.id.equals(matchdayId)) {
                 throw BusinessException.badRequest("Match " + req.matchId() + " is not part of this matchday");
+            }
+            if (match.kickoffTime.isBefore(OffsetDateTime.now())) {
+                throw BusinessException.badRequest("Match " + req.matchId() + " has already kicked off");
             }
             Prediction p = Prediction.findByUserGroupAndMatch(user.id, groupId, match.id);
             if (p == null) {
