@@ -13,6 +13,7 @@ import de.mwmrs.entity.Prediction;
 import de.mwmrs.entity.ScoringRule;
 import de.mwmrs.entity.Team;
 import de.mwmrs.security.PasswordService;
+import io.quarkus.arc.profile.IfBuildProfile;
 import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
@@ -37,6 +38,7 @@ import org.jboss.logging.Logger;
  * Idempotent: skipped when the competition already exists.
  */
 @ApplicationScoped
+@IfBuildProfile("dev")
 public class TestDataSeeder {
 
     private static final Logger LOG = Logger.getLogger(TestDataSeeder.class);

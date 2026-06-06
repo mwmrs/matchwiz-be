@@ -11,6 +11,7 @@ import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.transaction.Transactional;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -33,8 +34,14 @@ public class WorldCup2026Seeder {
     private static final Logger LOG = Logger.getLogger(WorldCup2026Seeder.class);
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm");
 
+    @ConfigProperty(name = "matchwiz.seeders.world-cup-2026.enabled", defaultValue = "false")
+    boolean enabled;
+
     @Transactional
     void onStart(@Observes StartupEvent event) {
+        if (!enabled) {
+            return;
+        }
         if (Competition.count("name", "FIFA World Cup 2026") > 0) {
             return;
         }
