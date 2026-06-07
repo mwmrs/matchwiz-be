@@ -39,6 +39,10 @@ public class Match extends BaseEntity {
     @Column(nullable = false)
     public MatchStatus status = MatchStatus.SCHEDULED;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "stage")
+    public MatchStage stage;
+
     public static List<Match> listByMatchday(Long matchdayId) {
         return list("matchday.id", matchdayId);
     }

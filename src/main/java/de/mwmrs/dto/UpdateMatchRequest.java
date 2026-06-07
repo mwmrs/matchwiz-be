@@ -1,5 +1,6 @@
 package de.mwmrs.dto;
 
+import de.mwmrs.entity.MatchStage;
 import de.mwmrs.entity.MatchStatus;
 import java.time.OffsetDateTime;
 
@@ -9,5 +10,6 @@ public record UpdateMatchRequest(
         OffsetDateTime kickoffTime,
         Integer homeGoals,
         Integer awayGoals,
-        MatchStatus status) {
+        MatchStatus status,
+        MatchStage stage) {
 }

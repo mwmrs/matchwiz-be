@@ -1,6 +1,7 @@
 package de.mwmrs.dto;
 
 import de.mwmrs.entity.Match;
+import de.mwmrs.entity.MatchStage;
 import de.mwmrs.entity.MatchStatus;
 
 public record MatchDto(
@@ -13,7 +14,8 @@ public record MatchDto(
         java.time.OffsetDateTime kickoffTime,
         Integer homeGoals,
         Integer awayGoals,
-        MatchStatus status) {
+        MatchStatus status,
+        MatchStage stage) {
 
     public static MatchDto from(Match m) {
         return new MatchDto(
@@ -26,6 +28,7 @@ public record MatchDto(
                 m.kickoffTime,
                 m.homeGoals,
                 m.awayGoals,
-                m.status);
+                m.status,
+                m.stage);
     }
 }
