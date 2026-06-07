@@ -41,6 +41,7 @@ public class MatchService {
         m.homeTeam = requireTeam(req.homeTeamId());
         m.awayTeam = requireTeam(req.awayTeamId());
         m.kickoffTime = req.kickoffTime();
+        m.stage = req.stage();
         m.persist();
         return m;
     }
@@ -69,6 +70,9 @@ public class MatchService {
         }
         if (req.status() != null) {
             m.status = req.status();
+        }
+        if (req.stage() != null) {
+            m.stage = req.stage();
         }
 
         ScoringRule rule = ScoringRule.findByCompetition(m.matchday.competition.id);

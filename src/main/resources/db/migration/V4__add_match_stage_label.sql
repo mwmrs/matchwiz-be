@@ -1,0 +1,1 @@
+ALTER TABLE match ADD COLUMN stage VARCHAR(20);
