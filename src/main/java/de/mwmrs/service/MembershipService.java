@@ -1,15 +1,19 @@
 package de.mwmrs.service;
 
+import de.mwmrs.dto.GroupMembershipDto;
 import de.mwmrs.entity.AppUser;
 import de.mwmrs.entity.Group;
 import de.mwmrs.entity.GroupMembership;
 import de.mwmrs.entity.GroupRole;
 import de.mwmrs.entity.NotificationType;
+import de.mwmrs.entity.Prediction;
 import de.mwmrs.exception.BusinessException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class MembershipService {
@@ -17,8 +21,14 @@ public class MembershipService {
     @Inject
     NotificationService notificationService;
 
-    public List<GroupMembership> listMembers(Long groupId) {
-        return GroupMembership.listByGroup(groupId);
+    public List<GroupMembershipDto> listMembers(Long groupId) {
+        List<GroupMembership> members = GroupMembership.listByGroup(groupId);
+        Map<Long, Long> countByUserId = Prediction.<Prediction>list("group.id = ?1", groupId)
+                .stream()
+                .collect(Collectors.groupingBy(p -> p.user.id, Collectors.counting()));
+        return members.stream()
+                .map(m -> GroupMembershipDto.from(m, countByUserId.getOrDefault(m.user.id, 0L).intValue()))
+                .toList();
     }
 
     public List<GroupMembership> listByUser(Long userId) {

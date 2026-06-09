@@ -11,7 +11,8 @@ public record GroupMembershipDto(
         String username,
         GroupRole role,
         boolean approved,
-        OffsetDateTime joinedAt) {
+        OffsetDateTime joinedAt,
+        Integer predictionsCount) {
 
     public static GroupMembershipDto from(GroupMembership m) {
         return new GroupMembershipDto(
@@ -21,6 +22,19 @@ public record GroupMembershipDto(
                 m.user.username,
                 m.role,
                 m.approved,
-                m.joinedAt);
+                m.joinedAt,
+                null);
+    }
+
+    public static GroupMembershipDto from(GroupMembership m, int predictionsCount) {
+        return new GroupMembershipDto(
+                m.id,
+                m.group.id,
+                m.user.id,
+                m.user.username,
+                m.role,
+                m.approved,
+                m.joinedAt,
+                predictionsCount);
     }
 }

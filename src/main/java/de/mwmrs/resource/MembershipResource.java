@@ -29,7 +29,7 @@ public class MembershipResource {
     @GET
     public List<GroupMembershipDto> listMembers(@PathParam("id") Long groupId) {
         groupAuthz.requireGroupAdmin(groupId);
-        return service.listMembers(groupId).stream().map(GroupMembershipDto::from).toList();
+        return service.listMembers(groupId);
     }
 
     @DELETE
