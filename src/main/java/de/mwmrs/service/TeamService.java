@@ -3,6 +3,7 @@ package de.mwmrs.service;
 import de.mwmrs.dto.CreateTeamRequest;
 import de.mwmrs.entity.Team;
 import de.mwmrs.exception.BusinessException;
+import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
 public class TeamService {
 
     public List<Team> list() {
-        return Team.listAll();
+        return Team.listAll(Sort.ascending("name"));
     }
 
     public Team get(Long id) {

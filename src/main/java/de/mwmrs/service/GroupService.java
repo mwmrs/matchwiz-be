@@ -4,6 +4,7 @@ import de.mwmrs.dto.CreateGroupRequest;
 import de.mwmrs.entity.Competition;
 import de.mwmrs.entity.Group;
 import de.mwmrs.exception.BusinessException;
+import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -15,7 +16,7 @@ public class GroupService {
         if (competitionId != null) {
             return Group.list("competition.id", competitionId);
         }
-        return Group.listAll();
+        return Group.listAll(Sort.ascending("name"));
     }
 
     public Group get(Long id) {
