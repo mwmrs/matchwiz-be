@@ -7,6 +7,7 @@ import de.mwmrs.entity.Matchday;
 import de.mwmrs.entity.ScoringRule;
 import de.mwmrs.entity.Team;
 import de.mwmrs.exception.BusinessException;
+import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -19,7 +20,7 @@ public class MatchService {
     ScoringService scoringService;
 
     public List<Match> listByMatchday(Long matchdayId) {
-        return Match.list("matchday.id", matchdayId);
+        return Match.list("matchday.id", Sort.ascending("kickoffTime"), matchdayId);
     }
 
     public Match get(Long id) {

@@ -6,6 +6,7 @@ import de.mwmrs.dto.UpdateCompetitionRequest;
 import de.mwmrs.entity.Competition;
 import de.mwmrs.entity.ScoringRule;
 import de.mwmrs.exception.BusinessException;
+import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 public class CompetitionService {
 
     public List<Competition> list() {
-        return Competition.listAll();
+        return Competition.listAll(Sort.ascending("name"));
     }
 
     public Competition get(Long id) {

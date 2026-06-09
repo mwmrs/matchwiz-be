@@ -2,6 +2,7 @@ package de.mwmrs.service;
 
 import de.mwmrs.entity.AppUser;
 import de.mwmrs.exception.BusinessException;
+import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 public class UserService {
 
     public List<AppUser> list() {
-        return AppUser.listAll();
+        return AppUser.listAll(Sort.ascending("username"));
     }
 
     @Transactional
