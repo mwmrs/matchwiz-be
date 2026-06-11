@@ -24,9 +24,12 @@ public class InvitationService {
     @Inject
     NotificationService notificationService;
 
+    @Inject
+    EmailService emailService;
+
     /**
-     * Creates an invitation. For the MVP no email is sent; the token is returned
-     * in the response and logged (stub-and-log).
+     * Creates an invitation and emails the token to the invitee. The token is
+     * also returned in the response so it can be shared manually.
      */
     @Transactional
     public Invitation create(Long groupId, CreateInvitationRequest req) {
@@ -40,8 +43,19 @@ public class InvitationService {
         inv.token = UUID.randomUUID().toString();
         inv.expiresAt = OffsetDateTime.now().plusDays(EXPIRY_DAYS);
         inv.persist();
-        LOG.infof("Invitation for %s to group %d: token=%s (email sending stubbed for MVP)",
-                inv.email, groupId, inv.token);
+
+        String body = """
+                Hi,
+
+                you have been invited to join the MatchWiz group "%s".
+
+                Your invitation token: %s
+
+                The invitation is valid for %d days.
+                """.formatted(group.name, inv.token, EXPIRY_DAYS);
+        emailService.send(inv.email, "MatchWiz group invitation", body);
+
+        LOG.infof("Invitation for %s to group %d created", inv.email, groupId);
         return inv;
     }
 
