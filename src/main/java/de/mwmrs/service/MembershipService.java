@@ -21,6 +21,9 @@ public class MembershipService {
     @Inject
     NotificationService notificationService;
 
+    @Inject
+    Messages messages;
+
     public List<GroupMembershipDto> listMembers(Long groupId) {
         List<GroupMembership> members = GroupMembership.listByGroup(groupId);
         Map<Long, Long> countByUserId = Prediction.<Prediction>list("group.id = ?1", groupId)
@@ -52,9 +55,10 @@ public class MembershipService {
         if (!groupHasAdmin) {
             m.role = GroupRole.GROUP_ADMIN;
         }
+        String lang = m.user.preferredLanguage;
         notificationService.create(m.user, NotificationType.REGISTRATION_APPROVED,
-                "Membership approved",
-                "Your membership in group \"" + m.group.name + "\" has been approved.");
+                messages.get("notification.membership_approved.title", lang),
+                messages.get("notification.membership_approved.message", lang, m.group.name));
         return m;
     }
 

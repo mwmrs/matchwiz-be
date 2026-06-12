@@ -27,6 +27,9 @@ public class InvitationService {
     @Inject
     EmailService emailService;
 
+    @Inject
+    Messages messages;
+
     /**
      * Creates an invitation and emails the token to the invitee. The token is
      * also returned in the response so it can be shared manually.
@@ -44,16 +47,9 @@ public class InvitationService {
         inv.expiresAt = OffsetDateTime.now().plusDays(EXPIRY_DAYS);
         inv.persist();
 
-        String body = """
-                Hi,
-
-                you have been invited to join the MatchWiz group "%s".
-
-                Your invitation token: %s
-
-                The invitation is valid for %d days.
-                """.formatted(group.name, inv.token, EXPIRY_DAYS);
-        emailService.send(inv.email, "MatchWiz group invitation", body);
+        String subject = messages.get("email.invitation.subject", null);
+        String body = messages.get("email.invitation.body", null, group.name, inv.token, EXPIRY_DAYS);
+        emailService.send(inv.email, subject, body);
 
         LOG.infof("Invitation for %s to group %d created", inv.email, groupId);
         return inv;
@@ -88,9 +84,10 @@ public class InvitationService {
         }
         inv.acceptedAt = OffsetDateTime.now();
 
+        String lang = user.preferredLanguage;
         notificationService.create(user, NotificationType.INVITATION_ACCEPTED,
-                "Invitation accepted",
-                "You joined group \"" + inv.group.name + "\".");
+                messages.get("notification.invitation_accepted.title", lang),
+                messages.get("notification.invitation_accepted.message", lang, inv.group.name));
         return membership;
     }
 }
