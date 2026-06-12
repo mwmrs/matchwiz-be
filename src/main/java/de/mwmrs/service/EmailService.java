@@ -20,6 +20,9 @@ public class EmailService {
     @Inject
     Mailer mailer;
 
+    @Inject
+    Messages messages;
+
     /**
      * Sends a plain-text email. Failures are logged, never propagated, so that
      * public endpoints (e.g. password reset) cannot be used as an SMTP-error oracle.
@@ -33,16 +36,10 @@ public class EmailService {
     }
 
     public void sendPasswordResetCode(AppUser user, String code, int expiryMinutes) {
-        String body = """
-                Hi %s,
-
-                a password reset was requested for your MatchWiz account "%s".
-
-                Your reset code: %s
-
-                The code is valid for %d minutes and can be used once.
-                If you did not request a password reset, you can ignore this email.
-                """.formatted(user.username, user.username, code, expiryMinutes);
-        send(user.email, "MatchWiz password reset code", body);
+        String lang = user.preferredLanguage;
+        String subject = messages.get("email.password_reset.subject", lang);
+        String body = messages.get("email.password_reset.body", lang,
+                user.username, user.username, code, expiryMinutes);
+        send(user.email, subject, body);
     }
 }
