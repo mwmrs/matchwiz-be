@@ -48,8 +48,8 @@ public class RankingService {
         }
 
         List<Prediction> predictions = Prediction.list(
-                "group.id = ?1 and match.matchday.competition.id = ?2 and match.status = ?3",
-                groupId, competitionId, MatchStatus.FINISHED);
+                "group.id = ?1 and match.matchday.competition.id = ?2 and match.status in (?3, ?4)",
+                groupId, competitionId, MatchStatus.FINISHED, MatchStatus.LIVE);
 
         for (Prediction p : predictions) {
             Tally t = tallies.get(p.user.id);

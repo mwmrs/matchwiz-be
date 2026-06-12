@@ -32,11 +32,11 @@ public class ScoringService {
 
     /**
      * Recomputes awarded points for every prediction on the match. When the match
-     * is not FINISHED (or has no result), awarded points are cleared. Idempotent.
+     * is not FINISHED or LIVE (or has no result), awarded points are cleared. Idempotent.
      */
     public void rescore(Match match, ScoringRule rule) {
         List<Prediction> predictions = Prediction.listByMatch(match.id);
-        boolean scored = match.status == MatchStatus.FINISHED
+        boolean scored = (match.status == MatchStatus.FINISHED || match.status == MatchStatus.LIVE)
                 && match.homeGoals != null && match.awayGoals != null;
         for (Prediction p : predictions) {
             if (scored) {
