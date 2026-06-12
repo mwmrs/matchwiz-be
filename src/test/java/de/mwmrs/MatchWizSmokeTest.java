@@ -2,6 +2,7 @@ package de.mwmrs;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.nullValue;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
@@ -184,6 +185,120 @@ class MatchWizSmokeTest {
                 .body(List.of(Map.of("matchId", matchId, "predictedHomeGoals", 1, "predictedAwayGoals", 0)))
                 .when().post("/api/matchdays/" + matchdayId + "/predictions?groupId=" + groupId)
                 .then().statusCode(400);
+    }
+
+    @Test
+    void liveMatchRankingFlow() {
+        String admin = login("admin", "admin");
+
+        Long competitionId = ((Number) given().contentType(ContentType.JSON).header("Authorization", bearer(admin))
+                .body(Map.of("name", "LiveLeague", "season", "2026/27"))
+                .when().post("/api/competitions")
+                .then().statusCode(201).extract().path("id")).longValue();
+
+        Long teamA = createTeam(admin, "LiveHome", "LHO");
+        Long teamB = createTeam(admin, "LiveAway", "LAW");
+
+        Long matchdayId = ((Number) given().contentType(ContentType.JSON).header("Authorization", bearer(admin))
+                .body(Map.of("competitionId", competitionId, "number", 1))
+                .when().post("/api/matchdays")
+                .then().statusCode(201).extract().path("id")).longValue();
+
+        Long matchId = ((Number) given().contentType(ContentType.JSON).header("Authorization", bearer(admin))
+                .body(Map.of("homeTeamId", teamA, "awayTeamId", teamB,
+                        "kickoffTime", OffsetDateTime.now().plusDays(1).toString()))
+                .when().post("/api/matchdays/" + matchdayId + "/matches")
+                .then().statusCode(201).extract().path("id")).longValue();
+
+        Long groupId = ((Number) given().contentType(ContentType.JSON).header("Authorization", bearer(admin))
+                .body(Map.of("competitionId", competitionId, "name", "LiveGroup"))
+                .when().post("/api/groups")
+                .then().statusCode(201).extract().path("id")).longValue();
+
+        Long memberId = ((Number) given().contentType(ContentType.JSON)
+                .body(Map.of("username", "liveMember", "password", "pw"))
+                .when().post("/api/auth/register")
+                .then().statusCode(201).extract().path("id")).longValue();
+
+        given().contentType(ContentType.JSON).header("Authorization", bearer(admin))
+                .when().post("/api/users/" + memberId + "/approve")
+                .then().statusCode(200);
+
+        String member = login("liveMember", "pw");
+
+        given().contentType(ContentType.JSON).header("Authorization", bearer(member))
+                .when().post("/api/groups/" + groupId + "/join")
+                .then().statusCode(201);
+
+        given().header("Authorization", bearer(admin))
+                .when().post("/api/groups/" + groupId + "/members/" + memberId + "/approve")
+                .then().statusCode(200);
+
+        // Member predicts 2:1.
+        given().contentType(ContentType.JSON).header("Authorization", bearer(member))
+                .body(List.of(Map.of("matchId", matchId, "predictedHomeGoals", 2, "predictedAwayGoals", 1)))
+                .when().post("/api/matchdays/" + matchdayId + "/predictions?groupId=" + groupId)
+                .then().statusCode(200);
+
+        // Admin sets match LIVE with score 2:1 — exact match → provisional 5 pts.
+        given().contentType(ContentType.JSON).header("Authorization", bearer(admin))
+                .body(Map.of("homeGoals", 2, "awayGoals", 1, "status", "LIVE"))
+                .when().patch("/api/matches/" + matchId)
+                .then().statusCode(200);
+
+        given().header("Authorization", bearer(member))
+                .when().get("/api/matchdays/" + matchdayId + "/predictions?groupId=" + groupId)
+                .then().statusCode(200)
+                .body("[0].awardedPoints", equalTo(5));
+
+        given().header("Authorization", bearer(member))
+                .when().get("/api/groups/" + groupId + "/rankings")
+                .then().statusCode(200)
+                .body("[0].totalPoints", equalTo(5))
+                .body("[0].exactPredictions", equalTo(1));
+
+        // Score changes to 1:1 — predicted 2:1 vs 1:1 = no category hit → 0 pts.
+        given().contentType(ContentType.JSON).header("Authorization", bearer(admin))
+                .body(Map.of("homeGoals", 1, "awayGoals", 1))
+                .when().patch("/api/matches/" + matchId)
+                .then().statusCode(200);
+
+        given().header("Authorization", bearer(member))
+                .when().get("/api/matchdays/" + matchdayId + "/predictions?groupId=" + groupId)
+                .then().statusCode(200)
+                .body("[0].awardedPoints", equalTo(0));
+
+        given().header("Authorization", bearer(member))
+                .when().get("/api/groups/" + groupId + "/rankings")
+                .then().statusCode(200)
+                .body("[0].totalPoints", equalTo(0));
+
+        // Match finished with same score — ranking unchanged.
+        given().contentType(ContentType.JSON).header("Authorization", bearer(admin))
+                .body(Map.of("status", "FINISHED"))
+                .when().patch("/api/matches/" + matchId)
+                .then().statusCode(200);
+
+        given().header("Authorization", bearer(member))
+                .when().get("/api/groups/" + groupId + "/rankings")
+                .then().statusCode(200)
+                .body("[0].totalPoints", equalTo(0));
+
+        // Admin reverts to SCHEDULED — points cleared from ranking and prediction.
+        given().contentType(ContentType.JSON).header("Authorization", bearer(admin))
+                .body(Map.of("status", "SCHEDULED"))
+                .when().patch("/api/matches/" + matchId)
+                .then().statusCode(200);
+
+        given().header("Authorization", bearer(member))
+                .when().get("/api/matchdays/" + matchdayId + "/predictions?groupId=" + groupId)
+                .then().statusCode(200)
+                .body("[0].awardedPoints", nullValue());
+
+        given().header("Authorization", bearer(member))
+                .when().get("/api/groups/" + groupId + "/rankings")
+                .then().statusCode(200)
+                .body("[0].totalPoints", equalTo(0));
     }
 
     @Test
