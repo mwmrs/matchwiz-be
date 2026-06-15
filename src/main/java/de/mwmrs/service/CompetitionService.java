@@ -4,6 +4,7 @@ import de.mwmrs.dto.CreateCompetitionRequest;
 import de.mwmrs.dto.ScoringRuleDto;
 import de.mwmrs.dto.UpdateCompetitionRequest;
 import de.mwmrs.entity.Competition;
+import de.mwmrs.entity.CompetitionStatus;
 import de.mwmrs.entity.ScoringRule;
 import de.mwmrs.exception.BusinessException;
 import io.quarkus.panache.common.Sort;
@@ -52,6 +53,12 @@ public class CompetitionService {
             c.season = req.season();
         }
         if (req.status() != null) {
+            if (c.status == CompetitionStatus.ARCHIVED) {
+                throw BusinessException.conflict("Cannot change status of an archived competition");
+            }
+            if (req.status() == CompetitionStatus.ARCHIVED && c.status != CompetitionStatus.CLOSED) {
+                throw BusinessException.conflict("Competition must be closed before it can be archived");
+            }
             c.status = req.status();
         }
         if (req.startDate() != null) {
