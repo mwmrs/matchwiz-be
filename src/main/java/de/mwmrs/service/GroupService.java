@@ -2,6 +2,7 @@ package de.mwmrs.service;
 
 import de.mwmrs.dto.CreateGroupRequest;
 import de.mwmrs.entity.Competition;
+import de.mwmrs.entity.CompetitionStatus;
 import de.mwmrs.entity.Group;
 import de.mwmrs.exception.BusinessException;
 import io.quarkus.panache.common.Sort;
@@ -33,6 +34,9 @@ public class GroupService {
         if (competition == null) {
             throw BusinessException.badRequest("Competition not found");
         }
+        if (competition.status != CompetitionStatus.ACTIVE) {
+            throw BusinessException.conflict("Cannot create group: competition is not active");
+        }
         Group g = new Group();
         g.competition = competition;
         g.name = req.name();
@@ -48,6 +52,9 @@ public class GroupService {
             Competition competition = Competition.findById(req.competitionId());
             if (competition == null) {
                 throw BusinessException.badRequest("Competition not found");
+            }
+            if (competition.status != CompetitionStatus.ACTIVE) {
+                throw BusinessException.conflict("Cannot move group: target competition is not active");
             }
             g.competition = competition;
         }

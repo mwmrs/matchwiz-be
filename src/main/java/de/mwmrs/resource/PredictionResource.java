@@ -2,6 +2,7 @@ package de.mwmrs.resource;
 
 import de.mwmrs.dto.PredictionDto;
 import de.mwmrs.dto.SubmitPredictionRequest;
+import de.mwmrs.entity.Prediction;
 import de.mwmrs.exception.BusinessException;
 import de.mwmrs.security.CurrentUser;
 import de.mwmrs.service.PredictionService;
@@ -32,12 +33,19 @@ public class PredictionResource {
 
     @GET
     public List<PredictionDto> list(@PathParam("id") Long matchdayId,
-                                    @QueryParam("groupId") Long groupId) {
+                                    @QueryParam("groupId") Long groupId,
+                                    @QueryParam("userId") Long userId) {
         if (groupId == null) {
             throw BusinessException.badRequest("groupId query parameter is required");
         }
-        return service.listForUser(matchdayId, groupId, currentUser.id()).stream()
-                .map(PredictionDto::from).toList();
+        Long targetUserId = (userId == null) ? currentUser.id() : userId;
+        boolean isOwnPredictions = targetUserId.equals(currentUser.id());
+
+        List<Prediction> predictions = isOwnPredictions
+                ? service.listForUser(matchdayId, groupId, targetUserId)
+                : service.listForUserFinishedMatches(matchdayId, groupId, targetUserId);
+
+        return predictions.stream().map(PredictionDto::from).toList();
     }
 
     @POST

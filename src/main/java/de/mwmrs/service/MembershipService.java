@@ -2,6 +2,7 @@ package de.mwmrs.service;
 
 import de.mwmrs.dto.GroupMembershipDto;
 import de.mwmrs.entity.AppUser;
+import de.mwmrs.entity.CompetitionStatus;
 import de.mwmrs.entity.Group;
 import de.mwmrs.entity.GroupMembership;
 import de.mwmrs.entity.GroupRole;
@@ -67,6 +68,9 @@ public class MembershipService {
         Group group = Group.findById(groupId);
         if (group == null) {
             throw BusinessException.notFound("Group not found");
+        }
+        if (group.competition.status != CompetitionStatus.ACTIVE) {
+            throw BusinessException.conflict("Cannot join group: competition is not active");
         }
         if (GroupMembership.findByGroupAndUser(groupId, user.id) != null) {
             throw BusinessException.conflict("Already a member or join request pending");
