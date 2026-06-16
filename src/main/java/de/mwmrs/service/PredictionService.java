@@ -6,6 +6,7 @@ import de.mwmrs.entity.Group;
 import de.mwmrs.entity.GroupMembership;
 import de.mwmrs.entity.Match;
 import de.mwmrs.entity.Matchday;
+import de.mwmrs.entity.MatchStatus;
 import de.mwmrs.entity.Prediction;
 import de.mwmrs.exception.BusinessException;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -20,6 +21,12 @@ public class PredictionService {
         return Prediction.list(
                 "match.matchday.id = ?1 and group.id = ?2 and user.id = ?3",
                 matchdayId, groupId, userId);
+    }
+
+    public List<Prediction> listForUserFinishedMatches(Long matchdayId, Long groupId, Long userId) {
+        return Prediction.list(
+                "match.matchday.id = ?1 and group.id = ?2 and user.id = ?3 and match.status = ?4",
+                matchdayId, groupId, userId, MatchStatus.FINISHED);
     }
 
     @Transactional
