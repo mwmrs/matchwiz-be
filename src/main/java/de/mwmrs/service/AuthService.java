@@ -6,12 +6,14 @@ import de.mwmrs.dto.RegisterRequest;
 import de.mwmrs.dto.UserDto;
 import de.mwmrs.entity.AppUser;
 import de.mwmrs.entity.GlobalRole;
+import de.mwmrs.entity.NotificationType;
 import de.mwmrs.exception.BusinessException;
 import de.mwmrs.security.PasswordService;
 import de.mwmrs.security.TokenService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import java.util.List;
 
 @ApplicationScoped
 public class AuthService {
@@ -21,6 +23,15 @@ public class AuthService {
 
     @Inject
     TokenService tokenService;
+
+    @Inject
+    NotificationService notificationService;
+
+    @Inject
+    EmailService emailService;
+
+    @Inject
+    Messages messages;
 
     /**
      * Registers a new user. The account is created inactive (active=false) and
@@ -38,6 +49,16 @@ public class AuthService {
         user.globalRole = GlobalRole.USER;
         user.active = false;
         user.persist();
+        List<AppUser> admins = AppUser.findAllAdmins();
+        for (AppUser admin : admins) {
+            String lang = admin.preferredLanguage;
+            notificationService.create(admin, NotificationType.USER_REGISTRATION_PENDING,
+                    messages.get("notification.user_registration_pending.title", lang),
+                    messages.get("notification.user_registration_pending.message", lang, user.username));
+            if (admin.emailNotifications && admin.email != null) {
+                emailService.sendUserRegistrationPending(admin, user);
+            }
+        }
         return user;
     }
 

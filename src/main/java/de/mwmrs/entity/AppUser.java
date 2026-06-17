@@ -6,6 +6,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "app_user")
@@ -52,5 +53,9 @@ public class AppUser extends BaseEntity {
 
     public static AppUser findByUsername(String username) {
         return find("username", username).firstResult();
+    }
+
+    public static List<AppUser> findAllAdmins() {
+        return list("globalRole", GlobalRole.ADMIN);
     }
 }

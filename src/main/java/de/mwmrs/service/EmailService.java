@@ -35,6 +35,14 @@ public class EmailService {
         }
     }
 
+    public void sendUserRegistrationPending(AppUser admin, AppUser newUser) {
+        String lang = admin.preferredLanguage;
+        String subject = messages.get("email.user_registration_pending.subject", lang);
+        String body = messages.get("email.user_registration_pending.body", lang,
+                admin.username, newUser.username, newUser.email);
+        send(admin.email, subject, body);
+    }
+
     public void sendPasswordResetCode(AppUser user, String code, int expiryMinutes) {
         String lang = user.preferredLanguage;
         String subject = messages.get("email.password_reset.subject", lang);
