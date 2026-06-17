@@ -12,6 +12,7 @@ import de.mwmrs.exception.BusinessException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,6 +22,9 @@ public class MembershipService {
 
     @Inject
     NotificationService notificationService;
+
+    @Inject
+    EmailService emailService;
 
     @Inject
     Messages messages;
@@ -81,6 +85,24 @@ public class MembershipService {
         m.role = GroupRole.MEMBER;
         m.approved = false;
         m.persist();
+        List<AppUser> recipients = new ArrayList<>(AppUser.findAllAdmins());
+        GroupMembership.<GroupMembership>list(
+                        "group.id = ?1 and role = ?2 and approved = true",
+                        groupId, GroupRole.GROUP_ADMIN)
+                .stream()
+                .map(gm -> gm.user)
+                .filter(u -> recipients.stream().noneMatch(r -> r.id.equals(u.id)))
+                .forEach(recipients::add);
+        for (AppUser recipient : recipients) {
+            String lang = recipient.preferredLanguage;
+            notificationService.create(recipient, NotificationType.GROUP_JOIN_PENDING,
+                    messages.get("notification.group_join_pending.title", lang),
+                    messages.get("notification.group_join_pending.message", lang,
+                            user.username, group.name));
+            if (recipient.emailNotifications && recipient.email != null) {
+                emailService.sendGroupJoinPending(recipient, user, group.name);
+            }
+        }
         return m;
     }
 
