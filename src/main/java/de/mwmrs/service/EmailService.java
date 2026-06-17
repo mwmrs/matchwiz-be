@@ -43,6 +43,14 @@ public class EmailService {
         send(admin.email, subject, body);
     }
 
+    public void sendGroupJoinPending(AppUser recipient, AppUser requester, String groupName) {
+        String lang = recipient.preferredLanguage;
+        String subject = messages.get("email.group_join_pending.subject", lang);
+        String body = messages.get("email.group_join_pending.body", lang,
+                recipient.username, requester.username, groupName);
+        send(recipient.email, subject, body);
+    }
+
     public void sendPasswordResetCode(AppUser user, String code, int expiryMinutes) {
         String lang = user.preferredLanguage;
         String subject = messages.get("email.password_reset.subject", lang);
