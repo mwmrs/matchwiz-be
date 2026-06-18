@@ -4,6 +4,8 @@ import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +41,7 @@ public class Messages {
                 LOG.warnf("Message bundle not found: %s", name);
                 return p;
             }
-            p.load(in);
+            p.load(new InputStreamReader(in, StandardCharsets.UTF_8));
         } catch (IOException e) {
             LOG.errorf(e, "Failed to load message bundle: %s", name);
         }
