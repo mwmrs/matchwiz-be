@@ -3,6 +3,7 @@ package de.mwmrs.service;
 import de.mwmrs.dto.RankingEntryDto;
 import de.mwmrs.entity.Group;
 import de.mwmrs.entity.GroupMembership;
+import de.mwmrs.entity.ManualBonus;
 import de.mwmrs.entity.Match;
 import de.mwmrs.entity.MatchStatus;
 import de.mwmrs.entity.Prediction;
@@ -21,10 +22,15 @@ public class RankingService {
     private static final class Tally {
         Long userId;
         String username;
-        int totalPoints;
+        int predictionPoints;
+        int bonusPoints;
         int exact;
         int goalDifference;
         int tendency;
+
+        int totalPoints() {
+            return predictionPoints + bonusPoints;
+        }
     }
 
     /**
@@ -61,7 +67,7 @@ public class RankingService {
                 continue;
             }
             if (p.awardedPoints != null) {
-                t.totalPoints += p.awardedPoints;
+                t.predictionPoints += p.awardedPoints;
             }
             switch (category(p.predictedHomeGoals, p.predictedAwayGoals, match.homeGoals, match.awayGoals)) {
                 case EXACT -> t.exact++;
@@ -72,9 +78,16 @@ public class RankingService {
             }
         }
 
+        for (ManualBonus mb : ManualBonus.listByGroup(groupId)) {
+            Tally t = tallies.get(mb.user.id);
+            if (t != null) {
+                t.bonusPoints += mb.points;
+            }
+        }
+
         List<Tally> sorted = new ArrayList<>(tallies.values());
         sorted.sort(Comparator
-                .comparingInt((Tally t) -> t.totalPoints).reversed()
+                .comparingInt((Tally t) -> t.totalPoints()).reversed()
                 .thenComparing(Comparator.comparingInt((Tally t) -> t.exact).reversed())
                 .thenComparing((Tally t) -> t.username, String.CASE_INSENSITIVE_ORDER));
 
@@ -82,7 +95,7 @@ public class RankingService {
         int rank = 1;
         for (Tally t : sorted) {
             result.add(new RankingEntryDto(rank++, t.userId, t.username,
-                    t.totalPoints, t.exact, t.goalDifference, t.tendency));
+                    t.totalPoints(), t.exact, t.goalDifference, t.tendency, t.bonusPoints));
         }
         return result;
     }
