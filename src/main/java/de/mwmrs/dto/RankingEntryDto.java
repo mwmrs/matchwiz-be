@@ -7,5 +7,6 @@ public record RankingEntryDto(
         int totalPoints,
         int exactPredictions,
         int goalDifferencePredictions,
-        int tendencyPredictions) {
+        int tendencyPredictions,
+        int bonusPoints) {
 }
