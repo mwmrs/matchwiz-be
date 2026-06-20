@@ -24,6 +24,7 @@ public class Messages {
     void init() {
         en = load("messages.properties");
         locales.put("de", load("messages_de.properties"));
+        locales.put("es", load("messages_es.properties"));
     }
 
     public String get(String key, String lang, Object... args) {
