@@ -43,7 +43,7 @@ public class PredictionResource {
 
         List<Prediction> predictions = isOwnPredictions
                 ? service.listForUser(matchdayId, groupId, targetUserId)
-                : service.listForUserFinishedMatches(matchdayId, groupId, targetUserId);
+                : service.listForUserNonScheduledMatches(matchdayId, groupId, targetUserId);
 
         return predictions.stream().map(PredictionDto::from).toList();
     }

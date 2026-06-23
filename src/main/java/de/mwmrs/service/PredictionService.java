@@ -23,10 +23,10 @@ public class PredictionService {
                 matchdayId, groupId, userId);
     }
 
-    public List<Prediction> listForUserFinishedMatches(Long matchdayId, Long groupId, Long userId) {
+    public List<Prediction> listForUserNonScheduledMatches(Long matchdayId, Long groupId, Long userId) {
         return Prediction.list(
-                "match.matchday.id = ?1 and group.id = ?2 and user.id = ?3 and match.status = ?4",
-                matchdayId, groupId, userId, MatchStatus.FINISHED);
+                "match.matchday.id = ?1 and group.id = ?2 and user.id = ?3 and match.status in ?4",
+                matchdayId, groupId, userId, List.of(MatchStatus.LIVE, MatchStatus.FINISHED));
     }
 
     @Transactional
