@@ -1,10 +1,14 @@
 package de.mwmrs.service;
 
 import de.mwmrs.entity.AppUser;
+import de.mwmrs.entity.Match;
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.Mailer;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.jboss.logging.Logger;
 
 /**
@@ -56,6 +60,19 @@ public class EmailService {
         String subject = messages.get("email.password_reset.subject", lang);
         String body = messages.get("email.password_reset.body", lang,
                 user.username, user.username, code, expiryMinutes);
+        send(user.email, subject, body);
+    }
+
+    public void sendMatchdayReminder(AppUser user, List<Match> matches) {
+        String lang = user.preferredLanguage;
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'UTC'");
+        String matchLines = matches.stream()
+                .map(m -> messages.get("email.matchday_reminder.match_line", lang,
+                        m.homeTeam.name, m.awayTeam.name,
+                        m.kickoffTime.withOffsetSameInstant(java.time.ZoneOffset.UTC).format(fmt)))
+                .collect(Collectors.joining("\n"));
+        String subject = messages.get("email.matchday_reminder.subject", lang);
+        String body = messages.get("email.matchday_reminder.body", lang, user.username, matchLines);
         send(user.email, subject, body);
     }
 }
