@@ -37,7 +37,7 @@ public class RankingService {
      * Builds the group ranking. Sorted by total points desc, then exact
      * predictions desc, then username asc (SPEC §8).
      */
-    public List<RankingEntryDto> ranking(Long groupId) {
+    public List<RankingEntryDto> ranking(Long groupId, Long matchdayId) {
         Group group = Group.findById(groupId);
         if (group == null) {
             throw BusinessException.notFound("Group not found");
@@ -53,9 +53,16 @@ public class RankingService {
             tallies.put(m.user.id, t);
         }
 
-        List<Prediction> predictions = Prediction.list(
-                "group.id = ?1 and match.matchday.competition.id = ?2 and match.status in (?3, ?4)",
-                groupId, competitionId, MatchStatus.FINISHED, MatchStatus.LIVE);
+        List<Prediction> predictions;
+        if (matchdayId != null) {
+            predictions = Prediction.list(
+                    "group.id = ?1 and match.matchday.id = ?2 and match.status in (?3, ?4)",
+                    groupId, matchdayId, MatchStatus.FINISHED, MatchStatus.LIVE);
+        } else {
+            predictions = Prediction.list(
+                    "group.id = ?1 and match.matchday.competition.id = ?2 and match.status in (?3, ?4)",
+                    groupId, competitionId, MatchStatus.FINISHED, MatchStatus.LIVE);
+        }
 
         for (Prediction p : predictions) {
             Tally t = tallies.get(p.user.id);
@@ -78,10 +85,12 @@ public class RankingService {
             }
         }
 
-        for (ManualBonus mb : ManualBonus.listByGroup(groupId)) {
-            Tally t = tallies.get(mb.user.id);
-            if (t != null) {
-                t.bonusPoints += mb.points;
+        if (matchdayId == null) {
+            for (ManualBonus mb : ManualBonus.listByGroup(groupId)) {
+                Tally t = tallies.get(mb.user.id);
+                if (t != null) {
+                    t.bonusPoints += mb.points;
+                }
             }
         }
 

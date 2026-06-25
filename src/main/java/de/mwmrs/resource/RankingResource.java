@@ -9,6 +9,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import java.util.List;
 
@@ -24,8 +25,10 @@ public class RankingResource {
     GroupAuthz groupAuthz;
 
     @GET
-    public List<RankingEntryDto> getGroupRankings(@PathParam("id") Long groupId) {
+    public List<RankingEntryDto> getGroupRankings(
+            @PathParam("id") Long groupId,
+            @QueryParam("matchdayId") Long matchdayId) {
         groupAuthz.requireMember(groupId);
-        return service.ranking(groupId);
+        return service.ranking(groupId, matchdayId);
     }
 }

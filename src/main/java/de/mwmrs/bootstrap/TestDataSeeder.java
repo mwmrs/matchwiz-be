@@ -13,26 +13,32 @@ import de.mwmrs.entity.Prediction;
 import de.mwmrs.entity.ScoringRule;
 import de.mwmrs.entity.Team;
 import de.mwmrs.security.PasswordService;
+import de.mwmrs.service.ScoringService;
 import io.quarkus.arc.profile.IfBuildProfile;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import org.jboss.logging.Logger;
 
 /**
  * Seeds a fake "MatchWiz Test Cup 2026" for local development.
- * Creates 4 teams, 2 matchdays, 4 matches, 1 group, 4 approved users and
- * predictions for MD1 (past matches) so the global admin can enter results
- * and observe scoring + ranking.
+ * Creates 4 teams, 3 matchdays, 6 matches, 1 group, 4 approved users and
+ * predictions for all matches with awarded points pre-computed so rankings,
+ * per-matchday filters, and prediction visibility can be tested immediately.
  *
- * Admin credentials (from AdminSeeder) are used to call PATCH /matches/{id}.
+ * All dates are relative to the current date so the data stays realistic
+ * regardless of when the app is first started:
+ *   MD1 (now-41d / now-40d): 2 FINISHED matches
+ *   MD2 (now-5d  / now-1d):  2 FINISHED matches
+ *   MD3 (now-1h  / now+3d):  1 LIVE match + 1 SCHEDULED
+ *
+ * Expected overall rankings: bob=15, alice=11, dave=9, carol=6
  * Test-user password for alice/bob/carol/dave is "test123".
  *
  * Idempotent: skipped when the competition already exists.
@@ -42,38 +48,49 @@ import org.jboss.logging.Logger;
 public class TestDataSeeder {
 
     private static final Logger LOG = Logger.getLogger(TestDataSeeder.class);
-    private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm");
+
+    @ConfigProperty(name = "matchwiz.seeders.test-data.enabled", defaultValue = "false")
+    boolean enabled;
 
     @Inject
     PasswordService passwordService;
 
+    @Inject
+    ScoringService scoringService;
+
     @Transactional
     void onStart(@Observes StartupEvent event) {
+        if (!enabled) return;
         if (Competition.count("name", "MatchWiz Test Cup 2026") > 0) {
             return;
         }
         seed();
-        LOG.info("Seeded MatchWiz Test Cup 2026: 4 teams, 2 matchdays, 4 matches, 1 group, 4 users");
+        LOG.info("Seeded MatchWiz Test Cup 2026: 4 teams, 3 matchdays, 6 matches (4 finished, 1 live, 1 scheduled), 1 group, 4 users");
     }
 
     private void seed() {
         Competition comp = competition();
-        scoringRule(comp);
+        ScoringRule rule = scoringRule(comp);
 
         Team ger = findOrCreateTeam("Germany", "GER", "https://flagcdn.com/w80/de.png");
         Team fra = findOrCreateTeam("France",  "FRA", "https://flagcdn.com/w80/fr.png");
         Team esp = findOrCreateTeam("Spain",   "ESP", "https://flagcdn.com/w80/es.png");
         Team bra = findOrCreateTeam("Brazil",  "BRA", "https://flagcdn.com/w80/br.png");
 
-        // MD1: kickoffs in the past — enter results now to test scoring
+        // MD1: FINISHED — results entered, scoring computed
         Matchday md1 = matchday(comp, 1);
-        Match m1 = match(md1, ger, fra, "05/29/2026 15:00");
-        Match m2 = match(md1, esp, bra, "05/30/2026 18:00");
+        Match m1 = finishedMatch(md1, ger, fra, daysAgo(41, 15), 2, 1);
+        Match m2 = finishedMatch(md1, esp, bra, daysAgo(40, 18), 1, 1);
 
-        // MD2: kickoffs in the future — predictions still open
+        // MD2: FINISHED — results entered, scoring computed
         Matchday md2 = matchday(comp, 2);
-        match(md2, ger, esp, "06/21/2026 15:00");
-        match(md2, fra, bra, "06/22/2026 18:00");
+        Match m3 = finishedMatch(md2, ger, esp, daysAgo(5, 15), 0, 2);
+        Match m4 = finishedMatch(md2, fra, bra, daysAgo(1, 18), 1, 0);
+
+        // MD3: one LIVE match (partial score), one SCHEDULED (predictions open)
+        Matchday md3 = matchday(comp, 3);
+        Match m5 = liveMatch(md3, ger, bra, hoursAgo(1), 1, 0);
+        Match m6 = scheduledMatch(md3, fra, esp, daysFromNow(3, 18));
 
         Group group = group(comp, "Alpha Tipprunde", "Test group for the fake cup");
 
@@ -87,20 +104,50 @@ public class TestDataSeeder {
         membership(group, carol, GroupRole.MEMBER,      true);
         membership(group, dave,  GroupRole.MEMBER,      true);
 
-        // Predictions for MD1 — mix of exact / goal-difference / tendency / miss hits
-        // depending on the result the admin enters.
-        //   e.g. if admin sets Germany 2-1 France: alice=5pts(exact), dave=3pts(goaldiff), bob/carol=0
-        //   e.g. if admin sets Spain 2-1 Brazil:   bob=2pts(tendency), rest=0
-        OffsetDateTime predictionTime = utc("05/27/2026 10:00");
-        prediction(alice, group, m1, 2, 1, predictionTime);
-        prediction(bob,   group, m1, 1, 1, predictionTime);
-        prediction(carol, group, m1, 0, 1, predictionTime);
-        prediction(dave,  group, m1, 2, 0, predictionTime);
+        // MD1 predictions — submitted 3 days before MD1
+        // GER 2-1 FRA: alice=exact(5), dave=tendency(2), bob/carol=miss(0)
+        // ESP 1-1 BRA: dave=exact(5), carol=goal-diff(3), alice/bob=miss(0)
+        // MD1 totals: dave=7, alice=5, carol=3, bob=0
+        OffsetDateTime t1 = daysAgo(44, 10);
+        prediction(alice, group, m1, 2, 1, t1, rule);
+        prediction(bob,   group, m1, 1, 1, t1, rule);
+        prediction(carol, group, m1, 0, 1, t1, rule);
+        prediction(dave,  group, m1, 2, 0, t1, rule);
 
-        prediction(alice, group, m2, 1, 2, predictionTime);
-        prediction(bob,   group, m2, 3, 1, predictionTime);
-        prediction(carol, group, m2, 2, 2, predictionTime);
-        prediction(dave,  group, m2, 1, 1, predictionTime);
+        prediction(alice, group, m2, 1, 2, t1, rule);
+        prediction(bob,   group, m2, 3, 1, t1, rule);
+        prediction(carol, group, m2, 2, 2, t1, rule);
+        prediction(dave,  group, m2, 1, 1, t1, rule);
+
+        // MD2 predictions — submitted 3 days before MD2
+        // GER 0-2 ESP: bob=exact(5), alice/dave=tendency(2), carol=miss(0)
+        // FRA 1-0 BRA: bob=exact(5), carol=goal-diff(3), alice=tendency(2), dave=miss(0)
+        // MD2 totals: bob=10, alice=4, carol=3, dave=2
+        OffsetDateTime t2 = daysAgo(8, 10);
+        prediction(alice, group, m3, 1, 2, t2, rule);
+        prediction(bob,   group, m3, 0, 2, t2, rule);
+        prediction(carol, group, m3, 1, 1, t2, rule);
+        prediction(dave,  group, m3, 0, 3, t2, rule);
+
+        prediction(alice, group, m4, 2, 0, t2, rule);
+        prediction(bob,   group, m4, 1, 0, t2, rule);
+        prediction(carol, group, m4, 2, 1, t2, rule);
+        prediction(dave,  group, m4, 0, 1, t2, rule);
+
+        // MD3 predictions — submitted 2 days before MD3
+        // GER 1-0 BRA (LIVE): bob=exact(5), alice=tendency(2), carol/dave=miss(0)
+        // FRA vs ESP (SCHEDULED): no result yet, awardedPoints=null
+        // MD3 live-only totals: bob=5, alice=2, carol=0, dave=0
+        OffsetDateTime t3 = daysAgo(2, 10);
+        prediction(alice, group, m5, 2, 0, t3, rule);
+        prediction(bob,   group, m5, 1, 0, t3, rule);
+        prediction(carol, group, m5, 0, 0, t3, rule);
+        prediction(dave,  group, m5, 1, 1, t3, rule);
+
+        prediction(alice, group, m6, 1, 1, t3, null);
+        prediction(bob,   group, m6, 2, 1, t3, null);
+        prediction(carol, group, m6, 0, 2, t3, null);
+        prediction(dave,  group, m6, 1, 0, t3, null);
     }
 
     // --- helpers ---
@@ -110,16 +157,17 @@ public class TestDataSeeder {
         comp.name = "MatchWiz Test Cup 2026";
         comp.season = "2026";
         comp.status = CompetitionStatus.ACTIVE;
-        comp.startDate = LocalDate.of(2026, 5, 29);
-        comp.endDate   = LocalDate.of(2026, 6, 30);
+        comp.startDate = LocalDate.now(ZoneOffset.UTC).minusDays(42);
+        comp.endDate   = LocalDate.now(ZoneOffset.UTC).plusDays(30);
         comp.persist();
         return comp;
     }
 
-    private void scoringRule(Competition comp) {
+    private ScoringRule scoringRule(Competition comp) {
         var rule = new ScoringRule();
         rule.competition = comp;
         rule.persist();
+        return rule;
     }
 
     private Team findOrCreateTeam(String name, String shortName, String logoUrl) {
@@ -143,12 +191,40 @@ public class TestDataSeeder {
         return md;
     }
 
-    private Match match(Matchday matchday, Team home, Team away, String kickoffStr) {
+    private Match finishedMatch(Matchday matchday, Team home, Team away, OffsetDateTime kickoff,
+                                int homeGoals, int awayGoals) {
         var m = new Match();
         m.matchday = matchday;
         m.homeTeam = home;
         m.awayTeam = away;
-        m.kickoffTime = utc(kickoffStr);
+        m.kickoffTime = kickoff;
+        m.homeGoals = homeGoals;
+        m.awayGoals = awayGoals;
+        m.status = MatchStatus.FINISHED;
+        m.persist();
+        return m;
+    }
+
+    private Match liveMatch(Matchday matchday, Team home, Team away, OffsetDateTime kickoff,
+                            int homeGoals, int awayGoals) {
+        var m = new Match();
+        m.matchday = matchday;
+        m.homeTeam = home;
+        m.awayTeam = away;
+        m.kickoffTime = kickoff;
+        m.homeGoals = homeGoals;
+        m.awayGoals = awayGoals;
+        m.status = MatchStatus.LIVE;
+        m.persist();
+        return m;
+    }
+
+    private Match scheduledMatch(Matchday matchday, Team home, Team away, OffsetDateTime kickoff) {
+        var m = new Match();
+        m.matchday = matchday;
+        m.homeTeam = home;
+        m.awayTeam = away;
+        m.kickoffTime = kickoff;
         m.status = MatchStatus.SCHEDULED;
         m.persist();
         return m;
@@ -183,7 +259,7 @@ public class TestDataSeeder {
     }
 
     private void prediction(AppUser user, Group group, Match match,
-                            int home, int away, OffsetDateTime submittedAt) {
+                            int home, int away, OffsetDateTime submittedAt, ScoringRule rule) {
         var p = new Prediction();
         p.user = user;
         p.group = group;
@@ -191,10 +267,21 @@ public class TestDataSeeder {
         p.predictedHomeGoals = home;
         p.predictedAwayGoals = away;
         p.submittedAt = submittedAt;
+        if (rule != null && match.homeGoals != null && match.awayGoals != null) {
+            p.awardedPoints = scoringService.computePoints(rule, home, away, match.homeGoals, match.awayGoals);
+        }
         p.persist();
     }
 
-    private OffsetDateTime utc(String s) {
-        return OffsetDateTime.of(LocalDateTime.parse(s, DATE_FMT), ZoneOffset.UTC);
+    private OffsetDateTime daysAgo(int days, int hour) {
+        return LocalDate.now(ZoneOffset.UTC).minusDays(days).atTime(hour, 0).atOffset(ZoneOffset.UTC);
+    }
+
+    private OffsetDateTime daysFromNow(int days, int hour) {
+        return LocalDate.now(ZoneOffset.UTC).plusDays(days).atTime(hour, 0).atOffset(ZoneOffset.UTC);
+    }
+
+    private OffsetDateTime hoursAgo(int hours) {
+        return OffsetDateTime.now(ZoneOffset.UTC).minusHours(hours).withMinute(0).withSecond(0).withNano(0);
     }
 }
