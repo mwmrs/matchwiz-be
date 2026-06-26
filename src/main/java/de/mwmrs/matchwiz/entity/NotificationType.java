@@ -1,0 +1,10 @@
+package de.mwmrs.matchwiz.entity;
+
+public enum NotificationType {
+    MATCHDAY_STARTS,
+    MISSING_PREDICTIONS,
+    REGISTRATION_APPROVED,
+    INVITATION_ACCEPTED,
+    USER_REGISTRATION_PENDING,
+    GROUP_JOIN_PENDING
+}

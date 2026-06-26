@@ -518,7 +518,7 @@ All other features use generated OpenAPI services and local component signals.
 ## Project Package Structure
 
 ```
-de.mwmrs
+de.mwmrs.matchwiz
 ├── bootstrap/      (AdminSeeder, TestDataSeeder, WorldCup2026Seeder)
 ├── dto/            (request/response DTOs)
 ├── entity/         (JPA/Panache entities + enums)
