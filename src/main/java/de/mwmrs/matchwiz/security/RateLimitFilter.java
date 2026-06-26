@@ -14,9 +14,13 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @ApplicationScoped
 public class RateLimitFilter {
+
+    @ConfigProperty(name = "matchwiz.rate-limit.enabled", defaultValue = "true")
+    boolean enabled;
 
     private final Map<String, Bucket> loginBuckets = new ConcurrentHashMap<>();
     private final Map<String, Bucket> resetBuckets = new ConcurrentHashMap<>();
@@ -24,6 +28,9 @@ public class RateLimitFilter {
     @ServerRequestFilter
     public Optional<RestResponse<ErrorResponse>> filter(ContainerRequestContext ctx,
                                                         RoutingContext rc) {
+        if (!enabled) {
+            return Optional.empty();
+        }
         String path = ctx.getUriInfo().getPath();
         String ip = clientIp(rc);
 
