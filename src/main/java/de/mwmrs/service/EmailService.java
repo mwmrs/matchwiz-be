@@ -34,6 +34,7 @@ public class EmailService {
     public void send(String to, String subject, String body) {
         try {
             mailer.send(Mail.withText(to, subject, body));
+            LOG.infof("Email was sent to %s (subject: %s)", to, subject);
         } catch (Exception e) {
             LOG.errorf(e, "Failed to send email to %s (subject: %s)", to, subject);
         }
