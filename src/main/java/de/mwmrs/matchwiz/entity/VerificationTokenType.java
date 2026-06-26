@@ -5,5 +5,6 @@ package de.mwmrs.matchwiz.entity;
  * once email-based one-time-password login is implemented.
  */
 public enum VerificationTokenType {
-    PASSWORD_RESET
+    PASSWORD_RESET,
+    EMAIL_VERIFICATION
 }

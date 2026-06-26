@@ -69,6 +69,9 @@ public class UserResource {
     public UserDto updateMe(@Valid UpdateUserRequest request) {
         AppUser u = currentUser.require();
         if (request.email() != null) {
+            if (!request.email().equals(u.email)) {
+                u.emailVerified = false;
+            }
             u.email = request.email();
         }
         if (request.preferredLanguage() != null) {

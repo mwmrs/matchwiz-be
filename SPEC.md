@@ -162,7 +162,15 @@ To prevent email enumeration, the request endpoint always returns 204 regardless
 
 ## Email Verification
 
-Planned, not yet implemented. The `email_verified` flag is stored on the user record.
+Users with an email address can verify it via a short-lived code:
+
+1. Request a code via `POST /api/auth/verify-email/request` (authenticated; requires email on account)
+2. An 8-character alphanumeric code is sent by email
+3. Submit the code via `POST /api/auth/verify-email/confirm` (authenticated, body: `{"code": "..."}`)
+4. Code expires after 30 minutes and is single-use; requesting a new code invalidates the previous one
+5. Changing the email address via `PATCH /api/users/me` resets `email_verified` to `false`
+
+The `email_verified` flag gates matchday reminder emails.
 
 ## Two-Factor Authentication
 

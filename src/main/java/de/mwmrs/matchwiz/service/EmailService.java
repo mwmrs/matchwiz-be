@@ -64,6 +64,14 @@ public class EmailService {
         send(user.email, subject, body);
     }
 
+    public void sendEmailVerificationCode(AppUser user, String code, int expiryMinutes) {
+        String lang = user.preferredLanguage;
+        String subject = messages.get("email.verify_email.subject", lang);
+        String body = messages.get("email.verify_email.body", lang,
+                user.username, user.username, code, expiryMinutes);
+        send(user.email, subject, body);
+    }
+
     public void sendMatchdayReminder(AppUser user, List<Match> matches) {
         String lang = user.preferredLanguage;
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'UTC'");
