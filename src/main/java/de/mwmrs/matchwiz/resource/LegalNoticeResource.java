@@ -1,7 +1,7 @@
-package de.mwmrs.resource;
+package de.mwmrs.matchwiz.resource;
 
-import de.mwmrs.dto.LegalNoticeDto;
-import de.mwmrs.service.LegalNoticeService;
+import de.mwmrs.matchwiz.dto.LegalNoticeDto;
+import de.mwmrs.matchwiz.service.LegalNoticeService;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;

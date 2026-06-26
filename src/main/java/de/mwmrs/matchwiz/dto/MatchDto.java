@@ -1,8 +1,8 @@
-package de.mwmrs.dto;
+package de.mwmrs.matchwiz.dto;
 
-import de.mwmrs.entity.Match;
-import de.mwmrs.entity.MatchStage;
-import de.mwmrs.entity.MatchStatus;
+import de.mwmrs.matchwiz.entity.Match;
+import de.mwmrs.matchwiz.entity.MatchStage;
+import de.mwmrs.matchwiz.entity.MatchStatus;
 
 public record MatchDto(
         Long id,

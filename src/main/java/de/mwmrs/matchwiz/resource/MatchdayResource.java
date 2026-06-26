@@ -1,8 +1,8 @@
-package de.mwmrs.resource;
+package de.mwmrs.matchwiz.resource;
 
-import de.mwmrs.dto.CreateMatchdayRequest;
-import de.mwmrs.dto.MatchdayDto;
-import de.mwmrs.service.MatchdayService;
+import de.mwmrs.matchwiz.dto.CreateMatchdayRequest;
+import de.mwmrs.matchwiz.dto.MatchdayDto;
+import de.mwmrs.matchwiz.service.MatchdayService;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;

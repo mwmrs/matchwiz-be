@@ -1,6 +1,6 @@
-package de.mwmrs.security;
+package de.mwmrs.matchwiz.security;
 
-import de.mwmrs.entity.AppUser;
+import de.mwmrs.matchwiz.entity.AppUser;
 import io.smallrye.jwt.build.Jwt;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.time.Duration;
@@ -19,7 +19,7 @@ public class TokenService {
     /**
      * Issues a signed JWT. The {@code groups} claim carries only the global role
      * (USER / ADMIN); group-scoped GROUP_ADMIN is resolved per-request against
-     * {@link de.mwmrs.entity.GroupMembership}, never embedded in the token.
+     * {@link de.mwmrs.matchwiz.entity.GroupMembership}, never embedded in the token.
      */
     public String issue(AppUser user) {
         return Jwt.issuer(issuer)

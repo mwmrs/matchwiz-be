@@ -1,6 +1,6 @@
-package de.mwmrs.dto;
+package de.mwmrs.matchwiz.dto;
 
-import de.mwmrs.entity.ManualBonus;
+import de.mwmrs.matchwiz.entity.ManualBonus;
 import java.time.OffsetDateTime;
 
 public record ManualBonusDto(

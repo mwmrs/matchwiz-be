@@ -1,7 +1,7 @@
-package de.mwmrs.dto;
+package de.mwmrs.matchwiz.dto;
 
-import de.mwmrs.entity.Competition;
-import de.mwmrs.entity.CompetitionStatus;
+import de.mwmrs.matchwiz.entity.Competition;
+import de.mwmrs.matchwiz.entity.CompetitionStatus;
 import java.time.LocalDate;
 
 public record CompetitionDto(

@@ -1,6 +1,6 @@
-package de.mwmrs.dto;
+package de.mwmrs.matchwiz.dto;
 
-import de.mwmrs.entity.MatchStage;
+import de.mwmrs.matchwiz.entity.MatchStage;
 import jakarta.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 

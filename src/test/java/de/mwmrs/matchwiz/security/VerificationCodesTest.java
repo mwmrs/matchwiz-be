@@ -1,4 +1,4 @@
-package de.mwmrs.security;
+package de.mwmrs.matchwiz.security;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;

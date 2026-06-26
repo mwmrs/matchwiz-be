@@ -1,4 +1,4 @@
-package de.mwmrs.security;
+package de.mwmrs.matchwiz.security;
 
 import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.enterprise.context.ApplicationScoped;

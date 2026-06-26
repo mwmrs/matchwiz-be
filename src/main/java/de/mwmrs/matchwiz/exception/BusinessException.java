@@ -1,10 +1,10 @@
-package de.mwmrs.exception;
+package de.mwmrs.matchwiz.exception;
 
 import jakarta.ws.rs.core.Response;
 
 /**
  * Domain-level error carrying an HTTP status. Mapped to a JSON error body by
- * {@link de.mwmrs.exception.ExceptionMappers}.
+ * {@link de.mwmrs.matchwiz.exception.ExceptionMappers}.
  */
 public class BusinessException extends RuntimeException {
 

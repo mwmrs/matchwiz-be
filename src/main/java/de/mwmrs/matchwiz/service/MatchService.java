@@ -1,12 +1,12 @@
-package de.mwmrs.service;
+package de.mwmrs.matchwiz.service;
 
-import de.mwmrs.dto.CreateMatchRequest;
-import de.mwmrs.dto.UpdateMatchRequest;
-import de.mwmrs.entity.Match;
-import de.mwmrs.entity.Matchday;
-import de.mwmrs.entity.ScoringRule;
-import de.mwmrs.entity.Team;
-import de.mwmrs.exception.BusinessException;
+import de.mwmrs.matchwiz.dto.CreateMatchRequest;
+import de.mwmrs.matchwiz.dto.UpdateMatchRequest;
+import de.mwmrs.matchwiz.entity.Match;
+import de.mwmrs.matchwiz.entity.Matchday;
+import de.mwmrs.matchwiz.entity.ScoringRule;
+import de.mwmrs.matchwiz.entity.Team;
+import de.mwmrs.matchwiz.exception.BusinessException;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

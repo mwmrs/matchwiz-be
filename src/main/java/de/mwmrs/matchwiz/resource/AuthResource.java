@@ -1,14 +1,14 @@
-package de.mwmrs.resource;
+package de.mwmrs.matchwiz.resource;
 
-import de.mwmrs.dto.LoginRequest;
-import de.mwmrs.dto.LoginResponse;
-import de.mwmrs.dto.PasswordResetConfirmRequest;
-import de.mwmrs.dto.PasswordResetRequest;
-import de.mwmrs.dto.RegisterRequest;
-import de.mwmrs.dto.UserDto;
-import de.mwmrs.entity.AppUser;
-import de.mwmrs.service.AuthService;
-import de.mwmrs.service.PasswordResetService;
+import de.mwmrs.matchwiz.dto.LoginRequest;
+import de.mwmrs.matchwiz.dto.LoginResponse;
+import de.mwmrs.matchwiz.dto.PasswordResetConfirmRequest;
+import de.mwmrs.matchwiz.dto.PasswordResetRequest;
+import de.mwmrs.matchwiz.dto.RegisterRequest;
+import de.mwmrs.matchwiz.dto.UserDto;
+import de.mwmrs.matchwiz.entity.AppUser;
+import de.mwmrs.matchwiz.service.AuthService;
+import de.mwmrs.matchwiz.service.PasswordResetService;
 import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;

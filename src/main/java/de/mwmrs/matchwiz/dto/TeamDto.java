@@ -1,6 +1,6 @@
-package de.mwmrs.dto;
+package de.mwmrs.matchwiz.dto;
 
-import de.mwmrs.entity.Team;
+import de.mwmrs.matchwiz.entity.Team;
 
 public record TeamDto(
         Long id,

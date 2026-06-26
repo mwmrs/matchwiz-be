@@ -1,13 +1,13 @@
-package de.mwmrs.service;
+package de.mwmrs.matchwiz.service;
 
-import de.mwmrs.dto.CreateInvitationRequest;
-import de.mwmrs.entity.AppUser;
-import de.mwmrs.entity.Group;
-import de.mwmrs.entity.GroupMembership;
-import de.mwmrs.entity.GroupRole;
-import de.mwmrs.entity.Invitation;
-import de.mwmrs.entity.NotificationType;
-import de.mwmrs.exception.BusinessException;
+import de.mwmrs.matchwiz.dto.CreateInvitationRequest;
+import de.mwmrs.matchwiz.entity.AppUser;
+import de.mwmrs.matchwiz.entity.Group;
+import de.mwmrs.matchwiz.entity.GroupMembership;
+import de.mwmrs.matchwiz.entity.GroupRole;
+import de.mwmrs.matchwiz.entity.Invitation;
+import de.mwmrs.matchwiz.entity.NotificationType;
+import de.mwmrs.matchwiz.exception.BusinessException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;

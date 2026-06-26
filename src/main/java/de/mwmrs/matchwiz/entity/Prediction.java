@@ -1,4 +1,4 @@
-package de.mwmrs.entity;
+package de.mwmrs.matchwiz.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

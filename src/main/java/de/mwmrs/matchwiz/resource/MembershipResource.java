@@ -1,8 +1,8 @@
-package de.mwmrs.resource;
+package de.mwmrs.matchwiz.resource;
 
-import de.mwmrs.dto.GroupMembershipDto;
-import de.mwmrs.security.GroupAuthz;
-import de.mwmrs.service.MembershipService;
+import de.mwmrs.matchwiz.dto.GroupMembershipDto;
+import de.mwmrs.matchwiz.security.GroupAuthz;
+import de.mwmrs.matchwiz.service.MembershipService;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.DELETE;

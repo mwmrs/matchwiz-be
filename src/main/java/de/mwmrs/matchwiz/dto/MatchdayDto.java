@@ -1,6 +1,6 @@
-package de.mwmrs.dto;
+package de.mwmrs.matchwiz.dto;
 
-import de.mwmrs.entity.Matchday;
+import de.mwmrs.matchwiz.entity.Matchday;
 
 public record MatchdayDto(
         Long id,

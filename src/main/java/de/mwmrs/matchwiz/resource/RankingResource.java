@@ -1,8 +1,8 @@
-package de.mwmrs.resource;
+package de.mwmrs.matchwiz.resource;
 
-import de.mwmrs.dto.RankingEntryDto;
-import de.mwmrs.security.GroupAuthz;
-import de.mwmrs.service.RankingService;
+import de.mwmrs.matchwiz.dto.RankingEntryDto;
+import de.mwmrs.matchwiz.security.GroupAuthz;
+import de.mwmrs.matchwiz.service.RankingService;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;

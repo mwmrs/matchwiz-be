@@ -1,8 +1,8 @@
-package de.mwmrs.bootstrap;
+package de.mwmrs.matchwiz.bootstrap;
 
-import de.mwmrs.entity.AppUser;
-import de.mwmrs.entity.GlobalRole;
-import de.mwmrs.security.PasswordService;
+import de.mwmrs.matchwiz.entity.AppUser;
+import de.mwmrs.matchwiz.entity.GlobalRole;
+import de.mwmrs.matchwiz.security.PasswordService;
 import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;

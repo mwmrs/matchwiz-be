@@ -1,9 +1,9 @@
-package de.mwmrs.resource;
+package de.mwmrs.matchwiz.resource;
 
-import de.mwmrs.dto.ManualBonusDto;
-import de.mwmrs.dto.ManualBonusRequest;
-import de.mwmrs.security.CurrentUser;
-import de.mwmrs.service.ManualBonusService;
+import de.mwmrs.matchwiz.dto.ManualBonusDto;
+import de.mwmrs.matchwiz.dto.ManualBonusRequest;
+import de.mwmrs.matchwiz.security.CurrentUser;
+import de.mwmrs.matchwiz.service.ManualBonusService;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;

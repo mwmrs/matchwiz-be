@@ -1,6 +1,6 @@
-package de.mwmrs.dto;
+package de.mwmrs.matchwiz.dto;
 
-import de.mwmrs.entity.LegalNotice;
+import de.mwmrs.matchwiz.entity.LegalNotice;
 import jakarta.validation.constraints.NotBlank;
 
 public record LegalNoticeDto(

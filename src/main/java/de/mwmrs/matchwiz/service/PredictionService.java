@@ -1,14 +1,14 @@
-package de.mwmrs.service;
+package de.mwmrs.matchwiz.service;
 
-import de.mwmrs.dto.SubmitPredictionRequest;
-import de.mwmrs.entity.AppUser;
-import de.mwmrs.entity.Group;
-import de.mwmrs.entity.GroupMembership;
-import de.mwmrs.entity.Match;
-import de.mwmrs.entity.Matchday;
-import de.mwmrs.entity.MatchStatus;
-import de.mwmrs.entity.Prediction;
-import de.mwmrs.exception.BusinessException;
+import de.mwmrs.matchwiz.dto.SubmitPredictionRequest;
+import de.mwmrs.matchwiz.entity.AppUser;
+import de.mwmrs.matchwiz.entity.Group;
+import de.mwmrs.matchwiz.entity.GroupMembership;
+import de.mwmrs.matchwiz.entity.Match;
+import de.mwmrs.matchwiz.entity.Matchday;
+import de.mwmrs.matchwiz.entity.MatchStatus;
+import de.mwmrs.matchwiz.entity.Prediction;
+import de.mwmrs.matchwiz.exception.BusinessException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import java.time.OffsetDateTime;

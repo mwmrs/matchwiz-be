@@ -1,8 +1,8 @@
-package de.mwmrs.service;
+package de.mwmrs.matchwiz.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.mwmrs.entity.ScoringRule;
+import de.mwmrs.matchwiz.entity.ScoringRule;
 import org.junit.jupiter.api.Test;
 
 class ScoringServiceTest {

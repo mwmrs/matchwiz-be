@@ -1,4 +1,4 @@
-package de.mwmrs.entity;
+package de.mwmrs.matchwiz.entity;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.GeneratedValue;

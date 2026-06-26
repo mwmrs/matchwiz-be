@@ -1,7 +1,7 @@
-package de.mwmrs.service;
+package de.mwmrs.matchwiz.service;
 
-import de.mwmrs.entity.AppUser;
-import de.mwmrs.exception.BusinessException;
+import de.mwmrs.matchwiz.entity.AppUser;
+import de.mwmrs.matchwiz.exception.BusinessException;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;

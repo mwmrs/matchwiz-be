@@ -1,13 +1,13 @@
-package de.mwmrs.service;
+package de.mwmrs.matchwiz.service;
 
-import de.mwmrs.dto.RankingEntryDto;
-import de.mwmrs.entity.Group;
-import de.mwmrs.entity.GroupMembership;
-import de.mwmrs.entity.ManualBonus;
-import de.mwmrs.entity.Match;
-import de.mwmrs.entity.MatchStatus;
-import de.mwmrs.entity.Prediction;
-import de.mwmrs.exception.BusinessException;
+import de.mwmrs.matchwiz.dto.RankingEntryDto;
+import de.mwmrs.matchwiz.entity.Group;
+import de.mwmrs.matchwiz.entity.GroupMembership;
+import de.mwmrs.matchwiz.entity.ManualBonus;
+import de.mwmrs.matchwiz.entity.Match;
+import de.mwmrs.matchwiz.entity.MatchStatus;
+import de.mwmrs.matchwiz.entity.Prediction;
+import de.mwmrs.matchwiz.exception.BusinessException;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
 import java.util.Comparator;

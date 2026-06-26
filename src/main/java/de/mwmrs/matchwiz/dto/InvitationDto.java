@@ -1,6 +1,6 @@
-package de.mwmrs.dto;
+package de.mwmrs.matchwiz.dto;
 
-import de.mwmrs.entity.Invitation;
+import de.mwmrs.matchwiz.entity.Invitation;
 import java.time.OffsetDateTime;
 
 public record InvitationDto(

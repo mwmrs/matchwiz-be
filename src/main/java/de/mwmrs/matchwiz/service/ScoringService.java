@@ -1,9 +1,9 @@
-package de.mwmrs.service;
+package de.mwmrs.matchwiz.service;
 
-import de.mwmrs.entity.Match;
-import de.mwmrs.entity.MatchStatus;
-import de.mwmrs.entity.Prediction;
-import de.mwmrs.entity.ScoringRule;
+import de.mwmrs.matchwiz.entity.Match;
+import de.mwmrs.matchwiz.entity.MatchStatus;
+import de.mwmrs.matchwiz.entity.Prediction;
+import de.mwmrs.matchwiz.entity.ScoringRule;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.util.List;
 

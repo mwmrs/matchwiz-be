@@ -1,8 +1,8 @@
-package de.mwmrs.resource;
+package de.mwmrs.matchwiz.resource;
 
-import de.mwmrs.dto.CreateTeamRequest;
-import de.mwmrs.dto.TeamDto;
-import de.mwmrs.service.TeamService;
+import de.mwmrs.matchwiz.dto.CreateTeamRequest;
+import de.mwmrs.matchwiz.dto.TeamDto;
+import de.mwmrs.matchwiz.service.TeamService;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;

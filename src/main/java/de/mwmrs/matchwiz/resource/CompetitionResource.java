@@ -1,10 +1,10 @@
-package de.mwmrs.resource;
+package de.mwmrs.matchwiz.resource;
 
-import de.mwmrs.dto.CompetitionDto;
-import de.mwmrs.dto.CreateCompetitionRequest;
-import de.mwmrs.dto.ScoringRuleDto;
-import de.mwmrs.dto.UpdateCompetitionRequest;
-import de.mwmrs.service.CompetitionService;
+import de.mwmrs.matchwiz.dto.CompetitionDto;
+import de.mwmrs.matchwiz.dto.CreateCompetitionRequest;
+import de.mwmrs.matchwiz.dto.ScoringRuleDto;
+import de.mwmrs.matchwiz.dto.UpdateCompetitionRequest;
+import de.mwmrs.matchwiz.service.CompetitionService;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;

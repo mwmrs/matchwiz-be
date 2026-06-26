@@ -1,4 +1,4 @@
-package de.mwmrs.security;
+package de.mwmrs.matchwiz.security;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

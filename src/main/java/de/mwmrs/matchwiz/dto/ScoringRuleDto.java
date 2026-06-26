@@ -1,6 +1,6 @@
-package de.mwmrs.dto;
+package de.mwmrs.matchwiz.dto;
 
-import de.mwmrs.entity.ScoringRule;
+import de.mwmrs.matchwiz.entity.ScoringRule;
 
 public record ScoringRuleDto(
         Long competitionId,

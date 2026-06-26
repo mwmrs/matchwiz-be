@@ -1,6 +1,6 @@
-package de.mwmrs.dto;
+package de.mwmrs.matchwiz.dto;
 
-import de.mwmrs.entity.Group;
+import de.mwmrs.matchwiz.entity.Group;
 
 public record GroupDto(
         Long id,

@@ -1,8 +1,8 @@
-package de.mwmrs.service;
+package de.mwmrs.matchwiz.service;
 
-import de.mwmrs.dto.CreateTeamRequest;
-import de.mwmrs.entity.Team;
-import de.mwmrs.exception.BusinessException;
+import de.mwmrs.matchwiz.dto.CreateTeamRequest;
+import de.mwmrs.matchwiz.entity.Team;
+import de.mwmrs.matchwiz.exception.BusinessException;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;

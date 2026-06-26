@@ -1,4 +1,4 @@
-package de.mwmrs.dto;
+package de.mwmrs.matchwiz.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -1,4 +1,4 @@
-package de.mwmrs.entity;
+package de.mwmrs.matchwiz.entity;
 
 /**
  * Purpose of a {@link VerificationToken}. A LOGIN_OTP value will be added

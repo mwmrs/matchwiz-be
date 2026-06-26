@@ -1,7 +1,7 @@
-package de.mwmrs.service;
+package de.mwmrs.matchwiz.service;
 
-import de.mwmrs.dto.LegalNoticeDto;
-import de.mwmrs.entity.LegalNotice;
+import de.mwmrs.matchwiz.dto.LegalNoticeDto;
+import de.mwmrs.matchwiz.entity.LegalNotice;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 

@@ -1,11 +1,11 @@
-package de.mwmrs.resource;
+package de.mwmrs.matchwiz.resource;
 
-import de.mwmrs.dto.PredictionDto;
-import de.mwmrs.dto.SubmitPredictionRequest;
-import de.mwmrs.entity.Prediction;
-import de.mwmrs.exception.BusinessException;
-import de.mwmrs.security.CurrentUser;
-import de.mwmrs.service.PredictionService;
+import de.mwmrs.matchwiz.dto.PredictionDto;
+import de.mwmrs.matchwiz.dto.SubmitPredictionRequest;
+import de.mwmrs.matchwiz.entity.Prediction;
+import de.mwmrs.matchwiz.exception.BusinessException;
+import de.mwmrs.matchwiz.security.CurrentUser;
+import de.mwmrs.matchwiz.service.PredictionService;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;

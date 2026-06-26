@@ -1,4 +1,4 @@
-package de.mwmrs;
+package de.mwmrs.matchwiz;
 
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;

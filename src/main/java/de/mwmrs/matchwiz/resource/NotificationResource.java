@@ -1,8 +1,8 @@
-package de.mwmrs.resource;
+package de.mwmrs.matchwiz.resource;
 
-import de.mwmrs.dto.NotificationDto;
-import de.mwmrs.security.CurrentUser;
-import de.mwmrs.service.NotificationService;
+import de.mwmrs.matchwiz.dto.NotificationDto;
+import de.mwmrs.matchwiz.security.CurrentUser;
+import de.mwmrs.matchwiz.service.NotificationService;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;

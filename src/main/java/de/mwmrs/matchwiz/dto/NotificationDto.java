@@ -1,7 +1,7 @@
-package de.mwmrs.dto;
+package de.mwmrs.matchwiz.dto;
 
-import de.mwmrs.entity.Notification;
-import de.mwmrs.entity.NotificationType;
+import de.mwmrs.matchwiz.entity.Notification;
+import de.mwmrs.matchwiz.entity.NotificationType;
 import java.time.OffsetDateTime;
 
 public record NotificationDto(

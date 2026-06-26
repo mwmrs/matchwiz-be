@@ -1,11 +1,11 @@
-package de.mwmrs.service;
+package de.mwmrs.matchwiz.service;
 
-import de.mwmrs.entity.AppUser;
-import de.mwmrs.entity.VerificationToken;
-import de.mwmrs.entity.VerificationTokenType;
-import de.mwmrs.exception.BusinessException;
-import de.mwmrs.security.PasswordService;
-import de.mwmrs.security.VerificationCodes;
+import de.mwmrs.matchwiz.entity.AppUser;
+import de.mwmrs.matchwiz.entity.VerificationToken;
+import de.mwmrs.matchwiz.entity.VerificationTokenType;
+import de.mwmrs.matchwiz.exception.BusinessException;
+import de.mwmrs.matchwiz.security.PasswordService;
+import de.mwmrs.matchwiz.security.VerificationCodes;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;

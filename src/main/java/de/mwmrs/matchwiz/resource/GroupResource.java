@@ -1,11 +1,11 @@
-package de.mwmrs.resource;
+package de.mwmrs.matchwiz.resource;
 
-import de.mwmrs.dto.CreateGroupRequest;
-import de.mwmrs.dto.GroupDto;
-import de.mwmrs.dto.GroupMembershipDto;
-import de.mwmrs.security.CurrentUser;
-import de.mwmrs.service.GroupService;
-import de.mwmrs.service.MembershipService;
+import de.mwmrs.matchwiz.dto.CreateGroupRequest;
+import de.mwmrs.matchwiz.dto.GroupDto;
+import de.mwmrs.matchwiz.dto.GroupMembershipDto;
+import de.mwmrs.matchwiz.security.CurrentUser;
+import de.mwmrs.matchwiz.service.GroupService;
+import de.mwmrs.matchwiz.service.MembershipService;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;

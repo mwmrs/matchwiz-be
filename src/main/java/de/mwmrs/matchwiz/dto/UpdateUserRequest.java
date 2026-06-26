@@ -1,6 +1,6 @@
-package de.mwmrs.dto;
+package de.mwmrs.matchwiz.dto;
 
-import de.mwmrs.entity.Theme;
+import de.mwmrs.matchwiz.entity.Theme;
 import jakarta.validation.constraints.Email;
 
 public record UpdateUserRequest(

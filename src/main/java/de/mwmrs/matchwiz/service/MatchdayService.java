@@ -1,9 +1,9 @@
-package de.mwmrs.service;
+package de.mwmrs.matchwiz.service;
 
-import de.mwmrs.dto.CreateMatchdayRequest;
-import de.mwmrs.entity.Competition;
-import de.mwmrs.entity.Matchday;
-import de.mwmrs.exception.BusinessException;
+import de.mwmrs.matchwiz.dto.CreateMatchdayRequest;
+import de.mwmrs.matchwiz.entity.Competition;
+import de.mwmrs.matchwiz.entity.Matchday;
+import de.mwmrs.matchwiz.exception.BusinessException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import java.util.List;

@@ -1,6 +1,6 @@
-package de.mwmrs.security;
+package de.mwmrs.matchwiz.security;
 
-import de.mwmrs.exception.ExceptionMappers.ErrorResponse;
+import de.mwmrs.matchwiz.exception.ExceptionMappers.ErrorResponse;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.vertx.ext.web.RoutingContext;

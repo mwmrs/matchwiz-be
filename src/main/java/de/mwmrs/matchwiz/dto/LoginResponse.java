@@ -1,4 +1,4 @@
-package de.mwmrs.dto;
+package de.mwmrs.matchwiz.dto;
 
 public record LoginResponse(String token, UserDto user) {
 }

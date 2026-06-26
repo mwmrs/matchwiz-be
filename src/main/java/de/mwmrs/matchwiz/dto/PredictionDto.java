@@ -1,6 +1,6 @@
-package de.mwmrs.dto;
+package de.mwmrs.matchwiz.dto;
 
-import de.mwmrs.entity.Prediction;
+import de.mwmrs.matchwiz.entity.Prediction;
 import java.time.OffsetDateTime;
 
 public record PredictionDto(

@@ -1,11 +1,11 @@
-package de.mwmrs.service;
+package de.mwmrs.matchwiz.service;
 
-import de.mwmrs.entity.AppUser;
-import de.mwmrs.entity.GroupMembership;
-import de.mwmrs.entity.Match;
-import de.mwmrs.entity.MatchStatus;
-import de.mwmrs.entity.Prediction;
-import de.mwmrs.entity.ReminderLog;
+import de.mwmrs.matchwiz.entity.AppUser;
+import de.mwmrs.matchwiz.entity.GroupMembership;
+import de.mwmrs.matchwiz.entity.Match;
+import de.mwmrs.matchwiz.entity.MatchStatus;
+import de.mwmrs.matchwiz.entity.Prediction;
+import de.mwmrs.matchwiz.entity.ReminderLog;
 import io.quarkus.scheduler.Scheduled;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

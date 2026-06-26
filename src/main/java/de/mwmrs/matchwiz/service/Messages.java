@@ -1,4 +1,4 @@
-package de.mwmrs.service;
+package de.mwmrs.matchwiz.service;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;

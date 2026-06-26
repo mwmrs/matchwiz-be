@@ -1,7 +1,7 @@
-package de.mwmrs.dto;
+package de.mwmrs.matchwiz.dto;
 
-import de.mwmrs.entity.MatchStage;
-import de.mwmrs.entity.MatchStatus;
+import de.mwmrs.matchwiz.entity.MatchStage;
+import de.mwmrs.matchwiz.entity.MatchStatus;
 import java.time.OffsetDateTime;
 
 public record UpdateMatchRequest(

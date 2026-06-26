@@ -1,8 +1,8 @@
-package de.mwmrs.dto;
+package de.mwmrs.matchwiz.dto;
 
-import de.mwmrs.entity.AppUser;
-import de.mwmrs.entity.GlobalRole;
-import de.mwmrs.entity.Theme;
+import de.mwmrs.matchwiz.entity.AppUser;
+import de.mwmrs.matchwiz.entity.GlobalRole;
+import de.mwmrs.matchwiz.entity.Theme;
 import java.time.OffsetDateTime;
 
 public record UserDto(

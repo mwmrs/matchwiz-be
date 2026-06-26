@@ -1,12 +1,12 @@
-package de.mwmrs.bootstrap;
+package de.mwmrs.matchwiz.bootstrap;
 
-import de.mwmrs.entity.Competition;
-import de.mwmrs.entity.CompetitionStatus;
-import de.mwmrs.entity.Match;
-import de.mwmrs.entity.MatchStatus;
-import de.mwmrs.entity.Matchday;
-import de.mwmrs.entity.ScoringRule;
-import de.mwmrs.entity.Team;
+import de.mwmrs.matchwiz.entity.Competition;
+import de.mwmrs.matchwiz.entity.CompetitionStatus;
+import de.mwmrs.matchwiz.entity.Match;
+import de.mwmrs.matchwiz.entity.MatchStatus;
+import de.mwmrs.matchwiz.entity.Matchday;
+import de.mwmrs.matchwiz.entity.ScoringRule;
+import de.mwmrs.matchwiz.entity.Team;
 import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;

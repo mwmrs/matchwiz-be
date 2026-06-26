@@ -1,8 +1,8 @@
-package de.mwmrs.security;
+package de.mwmrs.matchwiz.security;
 
-import de.mwmrs.entity.AppUser;
-import de.mwmrs.entity.GlobalRole;
-import de.mwmrs.exception.BusinessException;
+import de.mwmrs.matchwiz.entity.AppUser;
+import de.mwmrs.matchwiz.entity.GlobalRole;
+import de.mwmrs.matchwiz.exception.BusinessException;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.jwt.JsonWebToken;

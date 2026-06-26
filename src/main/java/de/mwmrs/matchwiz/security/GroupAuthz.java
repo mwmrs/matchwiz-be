@@ -1,8 +1,8 @@
-package de.mwmrs.security;
+package de.mwmrs.matchwiz.security;
 
-import de.mwmrs.entity.GroupMembership;
-import de.mwmrs.entity.GroupRole;
-import de.mwmrs.exception.BusinessException;
+import de.mwmrs.matchwiz.entity.GroupMembership;
+import de.mwmrs.matchwiz.entity.GroupRole;
+import de.mwmrs.matchwiz.exception.BusinessException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 

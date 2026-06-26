@@ -1,4 +1,4 @@
-package de.mwmrs.entity;
+package de.mwmrs.matchwiz.entity;
 
 public enum MatchStatus {
     SCHEDULED,

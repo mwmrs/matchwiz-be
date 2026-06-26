@@ -1,15 +1,15 @@
-package de.mwmrs.service;
+package de.mwmrs.matchwiz.service;
 
-import de.mwmrs.dto.LoginRequest;
-import de.mwmrs.dto.LoginResponse;
-import de.mwmrs.dto.RegisterRequest;
-import de.mwmrs.dto.UserDto;
-import de.mwmrs.entity.AppUser;
-import de.mwmrs.entity.GlobalRole;
-import de.mwmrs.entity.NotificationType;
-import de.mwmrs.exception.BusinessException;
-import de.mwmrs.security.PasswordService;
-import de.mwmrs.security.TokenService;
+import de.mwmrs.matchwiz.dto.LoginRequest;
+import de.mwmrs.matchwiz.dto.LoginResponse;
+import de.mwmrs.matchwiz.dto.RegisterRequest;
+import de.mwmrs.matchwiz.dto.UserDto;
+import de.mwmrs.matchwiz.entity.AppUser;
+import de.mwmrs.matchwiz.entity.GlobalRole;
+import de.mwmrs.matchwiz.entity.NotificationType;
+import de.mwmrs.matchwiz.exception.BusinessException;
+import de.mwmrs.matchwiz.security.PasswordService;
+import de.mwmrs.matchwiz.security.TokenService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;

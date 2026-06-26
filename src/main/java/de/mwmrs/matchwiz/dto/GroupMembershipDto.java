@@ -1,7 +1,7 @@
-package de.mwmrs.dto;
+package de.mwmrs.matchwiz.dto;
 
-import de.mwmrs.entity.GroupMembership;
-import de.mwmrs.entity.GroupRole;
+import de.mwmrs.matchwiz.entity.GroupMembership;
+import de.mwmrs.matchwiz.entity.GroupRole;
 import java.time.OffsetDateTime;
 
 public record GroupMembershipDto(

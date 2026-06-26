@@ -1,4 +1,4 @@
-package de.mwmrs.exception;
+package de.mwmrs.matchwiz.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.Response;

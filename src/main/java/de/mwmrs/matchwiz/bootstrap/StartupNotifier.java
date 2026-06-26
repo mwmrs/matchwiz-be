@@ -1,14 +1,17 @@
-package de.mwmrs.bootstrap;
+package de.mwmrs.matchwiz.bootstrap;
 
-import de.mwmrs.service.EmailService;
+import java.time.OffsetDateTime;
+import java.util.Optional;
+
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.jboss.logging.Logger;
+
+import de.mwmrs.matchwiz.service.EmailService;
 import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
-import java.time.OffsetDateTime;
-import java.util.Optional;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
  * Sends a one-time startup notification to MATCHWIZ_NOTIFY_EMAIL when the
@@ -17,6 +20,8 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
  */
 @ApplicationScoped
 public class StartupNotifier {
+
+    private static final Logger LOG = Logger.getLogger(StartupNotifier.class);
 
     @ConfigProperty(name = "matchwiz.notify.email")
     Optional<String> notifyEmail;
@@ -37,6 +42,7 @@ public class StartupNotifier {
     EmailService emailService;
 
     void onStart(@Observes StartupEvent event) {
+        LOG.infof("App started, launch mode %s, appVersion %s", launchMode.getDefaultProfile(), appVersion);
         if (notifyEmail.isEmpty()) {
             return;
         }
