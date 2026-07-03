@@ -6,6 +6,8 @@ import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.Mailer;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import java.time.DateTimeException;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -74,14 +76,26 @@ public class EmailService {
 
     public void sendMatchdayReminder(AppUser user, List<Match> matches) {
         String lang = user.preferredLanguage;
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'UTC'");
+        ZoneId zoneId = resolveZone(user.timezone);
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm zzz");
         String matchLines = matches.stream()
                 .map(m -> messages.get("email.matchday_reminder.match_line", lang,
                         m.homeTeam.name, m.awayTeam.name,
-                        m.kickoffTime.withOffsetSameInstant(java.time.ZoneOffset.UTC).format(fmt)))
+                        m.kickoffTime.atZoneSameInstant(zoneId).format(fmt)))
                 .collect(Collectors.joining("\n"));
         String subject = messages.get("email.matchday_reminder.subject", lang);
         String body = messages.get("email.matchday_reminder.body", lang, user.username, matchLines);
         send(user.email, subject, body);
+    }
+
+    static ZoneId resolveZone(String timezone) {
+        if (timezone == null || timezone.isBlank()) {
+            return ZoneId.of("UTC");
+        }
+        try {
+            return ZoneId.of(timezone);
+        } catch (DateTimeException e) {
+            return ZoneId.of("UTC");
+        }
     }
 }
